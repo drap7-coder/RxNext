@@ -8,6 +8,12 @@ export type {
   ReportScope,
 } from "@/lib/claims/types";
 export { demoClaimsData, demoClaimsSnapshot } from "@/lib/claims/demo";
+export {
+  buildProjectionSnapshot,
+  defaultProjectionInputs,
+  sanitizeProjectionInputs,
+  type DemoProjectionInputs,
+} from "@/lib/claims/projection";
 
 export type ClaimsDataMode = "demo" | "work";
 

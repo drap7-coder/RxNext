@@ -1,26 +1,70 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AppShell } from "@/components/AppShell";
-import { getPbmClaimsSnapshot } from "@/lib/claims";
-import { money } from "@/lib/format";
+import {
+  buildProjectionSnapshot,
+  defaultProjectionInputs,
+  sanitizeProjectionInputs,
+  type DemoProjectionInputs,
+} from "@/lib/claims";
+import { compactMoney, money } from "@/lib/format";
 import { metricTone, signedMoney, signedPercent, toneClass } from "@/lib/metric-tone";
 import { reportViews, type ReportView } from "@/lib/report-data";
 import "./product.css";
 
 const railIcons = ["◫", "⌁", "⌇", "◇", "≡", "↙"];
-const claims = getPbmClaimsSnapshot();
-const spendDrivers = claims.drivers;
+const projectionStorageKey = "rxnext-demo-projection";
 
 export default function Home() {
+  const [projection, setProjection] = useState(defaultProjectionInputs);
+  const [draft, setDraft] = useState(defaultProjectionInputs);
+  const [setupOpen, setSetupOpen] = useState(false);
   const [activeId, setActiveId] = useState("glp1");
   const [notice, setNotice] = useState("");
   const [reportView, setReportView] = useState<ReportView>("Overview");
+  const claims = useMemo(() => buildProjectionSnapshot(projection), [projection]);
+  const spendDrivers = claims.drivers;
   const active = useMemo(
     () => spendDrivers.find((d) => d.id === activeId) ?? spendDrivers[0],
-    [activeId],
+    [activeId, spendDrivers],
   );
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      try {
+        const saved = localStorage.getItem(projectionStorageKey);
+        if (!saved) {
+          setSetupOpen(true);
+          return;
+        }
+        const next = sanitizeProjectionInputs(JSON.parse(saved) as DemoProjectionInputs);
+        setProjection(next);
+        setDraft(next);
+      } catch {
+        setSetupOpen(true);
+      }
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  function applyProjection(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const next = sanitizeProjectionInputs(draft);
+    setProjection(next);
+    setDraft(next);
+    localStorage.setItem(projectionStorageKey, JSON.stringify(next));
+    setSetupOpen(false);
+    setNotice("Illustrative projection updated from the new plan assumptions.");
+  }
+
+  function resetProjection() {
+    setProjection(defaultProjectionInputs);
+    setDraft(defaultProjectionInputs);
+    localStorage.removeItem(projectionStorageKey);
+    setSetupOpen(true);
+  }
 
   function createOpportunity() {
     const item = {
@@ -53,6 +97,7 @@ export default function Home() {
     <AppShell
       active="reports"
       className="report-app"
+      organizationName={projection.planName}
       contextLeft={
         <>
           <span>Enterprise</span>
@@ -64,9 +109,9 @@ export default function Home() {
       }
       contextRight={
         <>
-          <i className="ok" />
-          8 sources healthy · refreshed 04:12 ET
-          <button type="button">View data health</button>
+          <i className="demo-dot" />
+          Demo mode · illustrative projection
+          <button type="button" onClick={() => setSetupOpen(true)}>Edit assumptions</button>
         </>
       }
     >
@@ -111,15 +156,15 @@ export default function Home() {
             <span>Data foundation</span>
             <p>
               <i />
-              Claims ledger <b>v42</b>
+              Projection model <b>v1</b>
             </p>
             <p>
               <i />
-              Eligibility <b>v19</b>
+              Sample claims <b>DEMO</b>
             </p>
             <p>
-              <i />
-              Rebate contracts <b>v18</b>
+              <i className="future" />
+              PBM connector <b>READY</b>
             </p>
           </div>
         </aside>
@@ -140,6 +185,17 @@ export default function Home() {
             </div>
           </header>
 
+          <div className="projection-banner">
+            <div>
+              <b>Illustrative projection</b>
+              <span>
+                Based on {projection.lives.toLocaleString()} lives, {money(projection.annualSpend)} current annual spend,
+                and {projection.trendPercent.toFixed(1)}% expected trend.
+              </span>
+            </div>
+            <button type="button" onClick={() => setSetupOpen(true)}>Edit assumptions</button>
+          </div>
+
           <div className="report-scope">
             <div>
               <b>Reporting basis</b>
@@ -153,7 +209,7 @@ export default function Home() {
               <b>Comparison</b>
               <span>{claims.scope.comparison}</span>
             </div>
-            <button type="button">Change scope</button>
+            <button type="button" onClick={() => setSetupOpen(true)}>Change assumptions</button>
           </div>
 
           <div className="report-kpis">
@@ -209,12 +265,15 @@ export default function Home() {
               </header>
               <div className="chart-meta">
                 <div>
-                  <span>September actual</span>
-                  <strong>$4.76M</strong>
+                  <span>Projected monthly</span>
+                  <strong>{claims.kpis[0].valueLabel}</strong>
                 </div>
                 <div>
-                  <span>Expected range</span>
-                  <b>$3.86–4.18M</b>
+                  <span>Current baseline range</span>
+                  <b>
+                    {compactMoney((projection.annualSpend / 12) * 0.96)}–
+                    {compactMoney((projection.annualSpend / 12) * 1.04)}
+                  </b>
                 </div>
                 <i>
                   <b />
@@ -275,7 +334,7 @@ export default function Home() {
                 </g>
                 <circle cx="735" cy="39" r="5" />
                 <text className="chart-callout" x="670" y="25">
-                  $4.76M
+                  {claims.kpis[0].valueLabel}
                 </text>
               </svg>
             </section>
@@ -317,7 +376,7 @@ export default function Home() {
               <header>
                 <div>
                   <span>Variance decomposition</span>
-                  <h2>September drivers</h2>
+                  <h2>Projected drivers</h2>
                 </div>
                 <button type="button">Absolute dollars ↓</button>
               </header>
@@ -396,7 +455,7 @@ export default function Home() {
             <header>
               <div>
                 <span>Object lineage</span>
-                <h2>Claims supporting {active.name.toLowerCase()}</h2>
+                <h2>Illustrative evidence for {active.name.toLowerCase()}</h2>
               </div>
               <div className="lineage-tabs">
                 <button type="button" className="active">
@@ -408,7 +467,7 @@ export default function Home() {
             </header>
             <div className="lineage-meta">
               <span>
-                <b>Paid claim</b> PBM adjudication
+                <b>Sample claim</b> Illustrative PBM adjudication
               </span>
               <i>→</i>
               <span>
@@ -456,6 +515,111 @@ export default function Home() {
           <button type="button" onClick={() => setNotice("")} aria-label="Dismiss">
             ×
           </button>
+        </div>
+      ) : null}
+
+      {setupOpen ? (
+        <div className="projection-overlay" role="presentation">
+          <form className="projection-setup" onSubmit={applyProjection}>
+            <header>
+              <div>
+                <span>Demo setup</span>
+                <h2>Build an illustrative pharmacy projection</h2>
+                <p>Enter a few plan assumptions. No claims or member data is uploaded.</p>
+              </div>
+              <button type="button" onClick={() => setSetupOpen(false)} aria-label="Close setup">×</button>
+            </header>
+            <div className="projection-fields">
+              <label className="wide">
+                <span>Employer or plan name</span>
+                <input
+                  value={draft.planName}
+                  onChange={(event) => setDraft({ ...draft, planName: event.target.value })}
+                  placeholder="Example Health Plan"
+                  required
+                />
+              </label>
+              <label>
+                <span>Covered lives</span>
+                <input
+                  type="number"
+                  min="100"
+                  step="1"
+                  value={draft.lives}
+                  onChange={(event) => setDraft({ ...draft, lives: Number(event.target.value) })}
+                  required
+                />
+              </label>
+              <label>
+                <span>Current annual pharmacy spend</span>
+                <input
+                  type="number"
+                  min="100000"
+                  step="10000"
+                  value={draft.annualSpend}
+                  onChange={(event) => setDraft({ ...draft, annualSpend: Number(event.target.value) })}
+                  required
+                />
+              </label>
+              <label>
+                <span>Expected annual trend</span>
+                <div className="input-suffix">
+                  <input
+                    type="number"
+                    min="-20"
+                    max="50"
+                    step="0.1"
+                    value={draft.trendPercent}
+                    onChange={(event) => setDraft({ ...draft, trendPercent: Number(event.target.value) })}
+                    required
+                  />
+                  <b>%</b>
+                </div>
+              </label>
+              <label>
+                <span>Specialty share of spend</span>
+                <div className="input-suffix">
+                  <input
+                    type="number"
+                    min="0"
+                    max="100"
+                    step="1"
+                    value={draft.specialtySharePercent}
+                    onChange={(event) => setDraft({ ...draft, specialtySharePercent: Number(event.target.value) })}
+                    required
+                  />
+                  <b>%</b>
+                </div>
+              </label>
+              <label className="wide">
+                <span>Primary pressure point</span>
+                <select
+                  value={draft.pressurePoint}
+                  onChange={(event) => setDraft({
+                    ...draft,
+                    pressurePoint: event.target.value as DemoProjectionInputs["pressurePoint"],
+                  })}
+                >
+                  <option value="balanced">Balanced / not sure</option>
+                  <option value="glp1">GLP-1 utilization</option>
+                  <option value="specialty">Specialty site of care</option>
+                  <option value="biosimilar">Biosimilar conversion</option>
+                  <option value="rebates">Rebates and guarantees</option>
+                </select>
+              </label>
+            </div>
+            <aside>
+              <b>What this creates</b>
+              <span>Projected spend, PMPM, illustrative drivers, and Low/Base/High opportunity economics.</span>
+            </aside>
+            <footer>
+              <button type="button" className="text-action" onClick={resetProjection}>Reset example</button>
+              <div>
+                <button type="button" onClick={() => setSetupOpen(false)}>Cancel</button>
+                <button type="submit" className="dark">Generate projection</button>
+              </div>
+            </footer>
+          </form>
         </div>
       ) : null}
     </AppShell>
