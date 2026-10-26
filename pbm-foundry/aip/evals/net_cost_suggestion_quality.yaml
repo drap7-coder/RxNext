@@ -1,0 +1,9 @@
+apiVersion: pbm.rxnext/v1
+kind: AipEval
+spec:
+  function: explain_spend_spike
+  checks:
+    - { id: dollar_reconciliation, assertion: sum(output.drivers.absolute_dollars) <= input.total_variance_dollars }
+    - { id: lineage_required, assertion: every(output.drivers, driver.lineage != null) }
+    - { id: acl_no_leakage, assertion: output respects caller.markings }
+    - { id: click_depth, assertion: max_object_transitions_to_claim <= 3 }

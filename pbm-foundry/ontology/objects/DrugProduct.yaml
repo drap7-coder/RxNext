@@ -1,0 +1,15 @@
+apiVersion: pbm.rxnext/v1
+kind: ObjectType
+metadata: { id: DrugProduct, displayName: Drug Product }
+spec:
+  primaryKey: ndc11
+  titleProperty: label_name
+  properties:
+    ndc11: { type: string, required: true }
+    gpi14: { type: string }
+    label_name: { type: string }
+    manufacturer: { type: string }
+    brand_generic: { type: string }
+    specialty: { type: boolean }
+    biosimilar: { type: boolean }
+    list_price: { type: currency }

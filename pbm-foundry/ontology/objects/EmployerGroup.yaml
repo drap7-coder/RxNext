@@ -1,0 +1,17 @@
+apiVersion: pbm.rxnext/v1
+kind: ObjectType
+metadata: { id: EmployerGroup, displayName: Employer Group }
+spec:
+  primaryKey: employer_group_id
+  titleProperty: name
+  markings: [tesla_only]
+  properties:
+    employer_group_id: { type: string, required: true }
+    name: { type: string }
+    eligible_lives: { type: integer, provenance: silver.resolve_member_identity }
+    gross_paid: { type: currency, provenance: gold.build_net_cost_ledger }
+    net_paid: { type: currency, provenance: gold.build_net_cost_ledger }
+    net_pmpm: { type: currency, provenance: gold.compute_tesla_kpis.net_pmpm }
+    net_pmpm_delta: { type: currency, provenance: gold.compute_tesla_kpis.net_pmpm_delta }
+    rebate_yield: { type: double, provenance: gold.compute_tesla_kpis.rebate_yield }
+    specialty_pmpm: { type: currency, provenance: gold.compute_tesla_kpis.specialty_pmpm }

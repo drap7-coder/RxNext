@@ -1,0 +1,8 @@
+apiVersion: pbm.rxnext/v1
+kind: ObjectCatalog
+spec:
+  compactTypes:
+    PrescriptionFill: { primaryKey: fill_id, properties: { fill_id: string, claim_id: string, fill_number: integer, dispensed_at: timestamp } }
+    TherapeuticClass: { primaryKey: class_id, properties: { class_id: string, name: string, gpi_prefix: string } }
+    FormularyTier: { primaryKey: tier_id, properties: { tier_id: string, plan_design_id: string, class_id: string, tier: integer, prior_auth_required: boolean } }
+    SiteOfCare: { primaryKey: site_id, properties: { site_id: string, name: string, site_type: string, allowed_amount_index: double } }

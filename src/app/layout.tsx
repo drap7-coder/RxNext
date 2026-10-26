@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "RxNext",
-  description: "The next thing starts here.",
+  title: "RxNext | Pharmacy Solutions Intelligence",
+  description: "Match pharmacy solutions to the objectives that matter most.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

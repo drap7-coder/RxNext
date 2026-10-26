@@ -1,0 +1,43 @@
+apiVersion: pbm.rxnext/v1
+kind: MetricCatalog
+metadata: { version: 1.0.0 }
+spec:
+  metrics:
+    - id: net_pmpm
+      displayName: Net PMPM
+      grain: [employer_group_id, month]
+      formula: (sum(plan_paid) - sum(rebate_allocated) - sum(other_credits)) / member_months
+      unit: USD_PMPM
+      source: gold.net_cost_ledger
+      owner: finance
+      tests: [non_negative_member_months, reconciles_to_ledger]
+    - id: gross_pmpm
+      formula: sum(plan_paid) / member_months
+      unit: USD_PMPM
+      source: gold.net_cost_ledger
+    - id: net_pmpm_delta
+      formula: net_pmpm_current - net_pmpm_baseline
+      unit: USD_PMPM
+      source: gold.employer_monthly_kpis
+    - id: rebate_yield
+      formula: sum(rebate_allocated) / sum(eligible_gross_cost)
+      unit: ratio
+      markings: [rebate_confidential]
+    - id: specialty_pmpm
+      formula: sum(net_cost where specialty = true) / member_months
+      unit: USD_PMPM
+    - id: glp1_pmpm
+      formula: sum(net_cost where therapeutic_class = 'GLP-1') / member_months
+      unit: USD_PMPM
+    - id: biosimilar_capture_rate
+      formula: biosimilar_eligible_fills_converted / biosimilar_eligible_fills
+      unit: ratio
+    - id: pa_sla_attainment
+      formula: count(pa_case where decided_at <= due_at) / count(pa_case decided)
+      unit: ratio
+    - id: member_friction_rate
+      formula: count(member_events where friction_flag = true) / 1000 member_months
+      unit: events_per_1000
+    - id: fwa_avoided_cost
+      formula: sum(estimated_loss_prevented where fraud_case = substantiated)
+      unit: USD

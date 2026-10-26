@@ -1,0 +1,14 @@
+apiVersion: pbm.rxnext/v1
+kind: ObjectType
+metadata: { id: Member, displayName: Member }
+spec:
+  primaryKey: member_id
+  titleProperty: masked_member_id
+  markings: [phi]
+  properties:
+    member_id: { type: string, required: true }
+    masked_member_id: { type: string }
+    employer_group_id: { type: string }
+    eligibility_status: { type: string }
+    friction_score: { type: double, provenance: gold.compute_member_friction }
+    net_paid_ytd: { type: currency, provenance: gold.build_net_cost_ledger }

@@ -1,0 +1,12 @@
+{
+  "id": "00_mission_control",
+  "title": "Mission Control",
+  "rootObject": { "type": "EmployerGroup", "where": "employer_group_id = $employer" },
+  "layout": [
+    { "widget": "MetricCard", "binding": "EmployerGroup.net_pmpm", "priority": "primary", "format": "absolute_then_percent", "onClick": { "openPage": "01_net_cost_war_room", "passObject": true } },
+    { "widget": "AlertTable", "binding": "EmployerGroup.active_cost_alerts", "onRowClick": { "openObject": "$row.source_object" } },
+    { "widget": "ObjectTable", "binding": "EmployerGroup.top_variance_claims", "columns": ["claim_id", "drug", "net_cost", "variance_contribution"], "onRowClick": { "openObject": "PharmacyClaim:$row.claim_id" } },
+    { "widget": "ActionPanel", "actions": ["RecalculateNetCost", "SimulatePlanChange"] }
+  ],
+  "successCriterion": "Explain net PMPM spike in fewer than three object transitions with claim lineage"
+}

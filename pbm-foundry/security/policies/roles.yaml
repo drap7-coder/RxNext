@@ -1,0 +1,8 @@
+apiVersion: pbm.rxnext/v1
+kind: PolicyCatalog
+spec:
+  roles:
+    benefits_ops: { objects: [EmployerGroup, PharmacyClaim, DrugProduct, PriorAuthCase, SpecialtyEpisode], markings: [phi, tesla_only], actions: [SuggestLowerNetAlt, OpenFraudCase, SimulatePlanChange] }
+    clinical: { objects: [Member, DrugProduct, PriorAuthCase, SpecialtyEpisode], markings: [phi], actions: [ApprovePriorAuth, SuggestLowerNetAlt] }
+    finance: { objects: [EmployerGroup, PharmacyClaim, RebateContract, PlanDesign], markings: [rebate_confidential, tesla_only], actions: [RecalculateNetCost, SimulatePlanChange] }
+    vendor_blind: { objects: [DrugProduct, TherapeuticClass, FormularyTier], deniedMarkings: [phi, rebate_confidential, tesla_only], actions: [] }

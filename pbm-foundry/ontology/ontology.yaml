@@ -1,0 +1,10 @@
+apiVersion: pbm.rxnext/v1
+kind: Ontology
+metadata:
+  id: pbm-decision-os
+  displayName: PBM Decision OS
+spec:
+  objectTypes: [Member, PlanDesign, PharmacyClaim, PrescriptionFill, DrugProduct, TherapeuticClass, FormularyTier, RebateContract, PriorAuthCase, SpecialtyEpisode, SiteOfCare, FraudCase, EmployerGroup]
+  linkTypes: [Member_has_Claim, Claim_for_Drug, Drug_in_Class, Class_on_Formulary, Claim_settled_by_Rebate, Member_has_PA, PA_targets_Drug, Episode_routes_to_Site]
+  actionTypes: [ApprovePriorAuth, SuggestLowerNetAlt, OpenFraudCase, RecalculateNetCost, SimulatePlanChange]
+  defaultMarkings: [phi]

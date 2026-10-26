@@ -1,0 +1,7 @@
+apiVersion: pbm.rxnext/v1
+kind: MarkingCatalog
+spec:
+  markings:
+    - { id: phi, description: Protected health information, defaultPolicy: deny }
+    - { id: rebate_confidential, description: Manufacturer and PBM contract economics, defaultPolicy: deny }
+    - { id: tesla_only, description: Employer-confidential objects and metrics, defaultPolicy: deny }

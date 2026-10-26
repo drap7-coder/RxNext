@@ -1,0 +1,15 @@
+apiVersion: pbm.rxnext/v1
+kind: ObjectType
+metadata: { id: SpecialtyEpisode, displayName: Specialty Episode }
+spec:
+  primaryKey: episode_id
+  titleProperty: episode_id
+  markings: [phi]
+  properties:
+    episode_id: { type: string, required: true }
+    member_id: { type: string }
+    therapy_class_id: { type: string }
+    current_site_id: { type: string }
+    episode_status: { type: string }
+    expected_net_cost: { type: currency, provenance: gold.build_net_cost_ledger }
+    site_savings_opportunity: { type: currency, provenance: gold.compute_tesla_kpis }

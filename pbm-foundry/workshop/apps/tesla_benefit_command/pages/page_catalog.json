@@ -1,0 +1,10 @@
+{
+  "pages": [
+    { "id": "02_formulary_optimizer", "root": "TherapeuticClass", "actions": ["SuggestLowerNetAlt"] },
+    { "id": "03_pa_sla_board", "root": "PriorAuthCase", "actions": ["ApprovePriorAuth"] },
+    { "id": "04_specialty_routing", "root": "SpecialtyEpisode", "links": ["Episode_routes_to_Site"] },
+    { "id": "05_fwa_investigation", "root": "FraudCase", "graph": ["Member", "PharmacyClaim", "DrugProduct"], "actions": ["OpenFraudCase"] },
+    { "id": "06_member_friction", "root": "Member", "metric": "member_friction_rate" },
+    { "id": "07_plan_simulator", "root": "PlanDesign", "actions": ["SimulatePlanChange"], "output": "projected_net_pmpm" }
+  ]
+}

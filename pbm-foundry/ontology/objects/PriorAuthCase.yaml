@@ -1,0 +1,17 @@
+apiVersion: pbm.rxnext/v1
+kind: ObjectType
+metadata: { id: PriorAuthCase, displayName: Prior Authorization Case }
+spec:
+  primaryKey: pa_case_id
+  titleProperty: pa_case_id
+  markings: [phi]
+  properties:
+    pa_case_id: { type: string, required: true }
+    member_id: { type: string }
+    target_ndc11: { type: string }
+    status: { type: string }
+    submitted_at: { type: timestamp }
+    due_at: { type: timestamp }
+    decided_at: { type: timestamp }
+    sla_minutes: { type: integer, provenance: gold.compute_tesla_kpis.pa_sla }
+    rationale: { type: string }

@@ -1,0 +1,11 @@
+{
+  "id": "01_net_cost_war_room",
+  "title": "Net Cost War Room",
+  "rootObject": { "type": "EmployerGroup", "fromContext": true },
+  "widgets": [
+    { "type": "VarianceDecomposition", "metric": "net_pmpm_delta", "rankBy": "absolute_dollars", "secondary": "percent_of_variance", "drillTo": "PharmacyClaim" },
+    { "type": "LinkGraph", "path": ["PharmacyClaim", "DrugProduct", "TherapeuticClass", "RebateContract"], "respectMarkings": true },
+    { "type": "ObjectTable", "objectType": "PharmacyClaim", "includeLineage": true },
+    { "type": "ActionPanel", "actions": ["RecalculateNetCost", "SuggestLowerNetAlt", "OpenFraudCase"] }
+  ]
+}

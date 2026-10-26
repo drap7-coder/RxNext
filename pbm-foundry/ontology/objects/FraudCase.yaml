@@ -1,0 +1,14 @@
+apiVersion: pbm.rxnext/v1
+kind: ObjectType
+metadata: { id: FraudCase, displayName: FWA Case }
+spec:
+  primaryKey: fraud_case_id
+  titleProperty: fraud_case_id
+  markings: [phi]
+  properties:
+    fraud_case_id: { type: string, required: true }
+    status: { type: string }
+    risk_score: { type: double, provenance: gold.detect_fwa_graph }
+    opened_at: { type: timestamp }
+    assigned_to: { type: string }
+    rationale: { type: string }

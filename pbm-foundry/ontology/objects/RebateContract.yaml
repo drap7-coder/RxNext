@@ -1,0 +1,16 @@
+apiVersion: pbm.rxnext/v1
+kind: ObjectType
+metadata: { id: RebateContract, displayName: Rebate Contract }
+spec:
+  primaryKey: contract_id
+  titleProperty: contract_name
+  markings: [rebate_confidential]
+  properties:
+    contract_id: { type: string, required: true }
+    contract_name: { type: string }
+    pbm_vendor: { type: string }
+    effective_start: { type: date }
+    effective_end: { type: date }
+    guarantee_basis: { type: string }
+    rebate_yield: { type: double, provenance: gold.build_net_cost_ledger }
+    settlement_lag_days: { type: integer }

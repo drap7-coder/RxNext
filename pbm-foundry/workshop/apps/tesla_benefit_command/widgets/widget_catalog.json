@@ -1,0 +1,10 @@
+{
+  "widgets": {
+    "ObjectTable": { "requires": ["objectType", "columns"], "interaction": "open_object" },
+    "LinkGraph": { "requires": ["path"], "interaction": "traverse_link", "aclAware": true },
+    "TimeSeries": { "requires": ["objectProperty", "timeGrain"], "interaction": "open_contributing_objects" },
+    "MapPharmacyNetwork": { "requires": ["SiteOfCare.location"], "interaction": "open_object" },
+    "ActionPanel": { "requires": ["actions"], "interaction": "execute_ontology_action" },
+    "MetricCard": { "requires": ["objectProperty"], "lineage": "property.provenance", "displayOrder": ["absolute", "pmpm", "percent"] }
+  }
+}

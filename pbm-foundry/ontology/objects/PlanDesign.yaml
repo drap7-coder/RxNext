@@ -1,0 +1,15 @@
+apiVersion: pbm.rxnext/v1
+kind: ObjectType
+metadata: { id: PlanDesign, displayName: Plan Design }
+spec:
+  primaryKey: plan_design_id
+  titleProperty: name
+  properties:
+    plan_design_id: { type: string, required: true }
+    employer_group_id: { type: string }
+    name: { type: string }
+    effective_date: { type: date }
+    deductible: { type: currency }
+    oop_max: { type: currency }
+    simulation_branch: { type: string }
+    projected_net_pmpm: { type: currency, provenance: gold.simulate_plan_change }

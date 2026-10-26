@@ -1,0 +1,21 @@
+apiVersion: pbm.rxnext/v1
+kind: ObjectType
+metadata: { id: PharmacyClaim, displayName: Pharmacy Claim }
+spec:
+  primaryKey: claim_id
+  titleProperty: claim_id
+  markings: [phi]
+  properties:
+    claim_id: { type: string, required: true }
+    member_id: { type: string }
+    ndc11: { type: string }
+    service_date: { type: date }
+    quantity: { type: double }
+    days_supply: { type: integer }
+    ingredient_cost: { type: currency }
+    plan_paid: { type: currency }
+    member_paid: { type: currency }
+    rebate_allocated: { type: currency, markings: [rebate_confidential], provenance: gold.build_net_cost_ledger }
+    net_cost: { type: currency, provenance: gold.build_net_cost_ledger }
+    variance_contribution: { type: currency, provenance: gold.compute_tesla_kpis }
+    source_record_id: { type: string }

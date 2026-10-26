@@ -1,0 +1,29 @@
+apiVersion: pbm.rxnext/v1
+kind: ActionCatalog
+spec:
+  actions:
+    - id: ApprovePriorAuth
+      target: PriorAuthCase
+      permissions: [clinical]
+      inputs: { decision: { type: enum, values: [approved, denied, more_info] }, rationale: { type: string, required: true } }
+      mutations: { status: "$decision", rationale: "$rationale", decided_at: "$now" }
+      audit: required
+    - id: SuggestLowerNetAlt
+      target: PharmacyClaim
+      permissions: [benefits_ops, clinical]
+      inputs: { alternative_ndc11: { type: string }, rationale: { type: string } }
+      creates: { objectType: Recommendation, properties: { source_claim_id: "$target.claim_id", suggested_ndc11: "$alternative_ndc11" } }
+    - id: OpenFraudCase
+      target: PharmacyClaim
+      permissions: [benefits_ops]
+      inputs: { rationale: { type: string, required: true } }
+      creates: { objectType: FraudCase, properties: { status: open, rationale: "$rationale", opened_at: "$now" } }
+    - id: RecalculateNetCost
+      target: PharmacyClaim
+      permissions: [finance]
+      function: gold.build_net_cost_ledger.recalculate_claim
+    - id: SimulatePlanChange
+      target: PlanDesign
+      permissions: [benefits_ops, finance]
+      inputs: { branch_name: { type: string }, changes: { type: json } }
+      function: gold.simulate_plan_change

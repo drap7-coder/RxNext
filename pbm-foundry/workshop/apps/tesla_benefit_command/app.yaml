@@ -1,0 +1,9 @@
+apiVersion: pbm.rxnext/v1
+kind: WorkshopApp
+metadata: { id: tesla-benefit-command, displayName: Tesla Benefit Command }
+spec:
+  ontology: pbm-decision-os
+  defaultPage: 00_mission_control
+  pages: [00_mission_control, 01_net_cost_war_room, 02_formulary_optimizer, 03_pa_sla_board, 04_specialty_routing, 05_fwa_investigation, 06_member_friction, 07_plan_simulator]
+  variables: { employer: Tesla, as_of_date: null, cohort: all_eligible }
+  requiredRoles: [benefits_ops, clinical, finance]

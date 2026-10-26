@@ -1,24 +1,20 @@
-export default function Home() {
-  return (
-    <main className="grid min-h-screen place-items-center bg-[#080b12] px-6 text-white">
-      <section className="w-full max-w-4xl border border-white/10 bg-white/[0.035] p-8 shadow-2xl shadow-black/30 sm:p-14">
-        <div className="mb-20 flex items-center justify-between font-mono text-xs uppercase tracking-[0.2em] text-white/50">
-          <span>RxNext</span>
-          <span className="flex items-center gap-2">
-            <i className="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_16px_#34d399]" />
-            Ready
-          </span>
-        </div>
-        <p className="mb-5 font-mono text-xs uppercase tracking-[0.24em] text-violet-300">A clean foundation</p>
-        <h1 className="max-w-3xl text-5xl font-semibold tracking-[-0.06em] sm:text-7xl">The next thing starts here.</h1>
-        <p className="mt-7 max-w-xl text-base leading-7 text-white/55 sm:text-lg">
-          RxNext is connected, deployed, and ready to become whatever comes next.
-        </p>
-        <div className="mt-14 h-px bg-gradient-to-r from-emerald-400 via-cyan-400 to-violet-400" />
-        <footer className="mt-5 flex flex-wrap gap-x-6 gap-y-2 font-mono text-[11px] uppercase tracking-[0.12em] text-white/35">
-          <span>Next.js</span><span>TypeScript</span><span>Tailwind CSS</span><span>Vercel</span>
-        </footer>
-      </section>
-    </main>
-  );
-}
+"use client";
+import Link from "next/link";
+import { useMemo, useState } from "react";
+import "./product.css";
+type Driver={id:string;name:string;detail:string;dollars:number;pmpm:number;confidence:number;claims:number;owner:string;status:string;evidence:string;lineage:{id:string;member:string;drug:string;date:string;paid:number;delta:number}[]};
+const drivers:Driver[]=[
+{id:"glp1",name:"GLP-1 utilization",detail:"New starts and persistence",dollars:286412,pmpm:5.73,confidence:94,claims:447,owner:"Clinical strategy",status:"Ready to evaluate",evidence:"126 incremental utilizers; unit cost stable within 1.2%.",lineage:[{id:"CLM-847210",member:"MBR-02914",drug:"Zepbound 10mg",date:"Sep 18",paid:1049.22,delta:1049.22},{id:"CLM-846992",member:"MBR-10473",drug:"Wegovy 2.4mg",date:"Sep 17",paid:978.44,delta:978.44},{id:"CLM-846104",member:"MBR-08831",drug:"Zepbound 7.5mg",date:"Sep 15",paid:1032.81,delta:516.41}]},
+{id:"specialty",name:"Specialty site of care",detail:"Hospital outpatient migration",dollars:184930,pmpm:3.70,confidence:91,claims:31,owner:"Network strategy",status:"Validation needed",evidence:"Nine infusions moved from ambulatory suites to HOPD settings.",lineage:[{id:"CLM-840192",member:"MBR-13008",drug:"Skyrizi infusion",date:"Sep 09",paid:18622.40,delta:9048.10},{id:"CLM-838447",member:"MBR-04316",drug:"Entyvio infusion",date:"Sep 05",paid:15218.70,delta:7282.20}]},
+{id:"rebate",name:"Rebate timing",detail:"Q3 settlement after close",dollars:121600,pmpm:2.43,confidence:99,claims:0,owner:"Finance",status:"Known timing item",evidence:"Manufacturer credits posted eight days after the September close.",lineage:[{id:"REB-Q3-018",member:"—",drug:"Diabetes portfolio",date:"Oct 08",paid:0,delta:74200},{id:"REB-Q3-024",member:"—",drug:"Inflammatory portfolio",date:"Oct 08",paid:0,delta:47400}]},
+{id:"biosimilar",name:"Biosimilar leakage",detail:"Non-preferred reference products",dollars:86904,pmpm:1.74,confidence:88,claims:26,owner:"Formulary",status:"Ready to evaluate",evidence:"Reference products remained in use where preferred alternatives were available.",lineage:[{id:"CLM-842110",member:"MBR-11903",drug:"Humira",date:"Sep 11",paid:6684.31,delta:3921.18},{id:"CLM-839501",member:"MBR-02271",drug:"Herceptin",date:"Sep 07",paid:7210.54,delta:3644.80}]}];
+const money=(n:number)=>new Intl.NumberFormat("en-US",{style:"currency",currency:"USD",maximumFractionDigits:0}).format(n);
+export default function Home(){const[activeId,setActiveId]=useState("glp1");const[notice,setNotice]=useState("");const active=useMemo(()=>drivers.find(d=>d.id===activeId)??drivers[0],[activeId]);function createOpportunity(){const item={id:`OPP-${Date.now().toString().slice(-5)}`,name:active.name,value:active.dollars,stage:"Identified",owner:active.owner,created:new Date().toISOString()};const current=JSON.parse(localStorage.getItem("rxnext-opportunities")||"[]");localStorage.setItem("rxnext-opportunities",JSON.stringify([item,...current.filter((x:{name:string})=>x.name!==item.name)]));setNotice(`${item.id} created and added to the decision pipeline.`)}return <main className="beta-app">
+<header className="beta-top"><Link className="beta-logo" href="/"><b>RxNext</b><span>Pharmacy decision system</span></Link><nav><Link className="active" href="/">Observe</Link><Link href="/solutions">Decide</Link><button>Act</button></nav><div className="beta-org"><span>ACME Holdings</span><i>Benefits strategy</i><b>ND</b></div></header>
+<div className="beta-context"><div><span>Portfolio</span><b>/</b><span>Pharmacy</span><b>/</b><strong>September variance</strong></div><div><i className="ok"/>Claims reconciled through Oct 15 · 04:12 ET <button>Data status</button></div></div>
+<section className="beta-page"><header className="beta-title"><div><span>INVESTIGATION RX-2094</span><h1>September pharmacy variance</h1><p>Actual net paid compared with June–August normalized baseline</p></div><div className="beta-title-actions"><button>Share</button><button>Export brief</button></div></header>
+<div className="beta-kpis"><article className="primary"><span>Net paid variance</span><strong>+$740,320</strong><p><b>+$14.82 PMPM</b><em>18.4% above baseline</em></p></article><article><span>Forecast impact</span><strong>+$2.18M</strong><p>Year-end if trend persists</p></article><article><span>Explained</span><strong>91.8%</strong><p>$679,846 attributed</p></article><article><span>Eligible lives</span><strong>49,954</strong><p>99.7% eligibility match</p></article></div>
+<div className="beta-workspace"><section className="beta-panel drivers"><header><div><span>VARIANCE DECOMPOSITION</span><h2>What changed</h2></div><button>Absolute dollars ↓</button></header><div className="driver-head"><span>Driver</span><span>Net variance</span><span>PMPM</span><span>Confidence</span></div>{drivers.map(d=><button key={d.id} className={activeId===d.id?"driver active":"driver"} onClick={()=>setActiveId(d.id)}><div><b>{d.name}</b><span>{d.detail} · {d.claims?`${d.claims} claims`:"financial event"}</span></div><strong>{money(d.dollars)}</strong><em>+${d.pmpm.toFixed(2)}</em><i>{d.confidence}%</i></button>)}<div className="driver remainder"><div><b>Other portfolio movement</b><span>10,833 claims</span></div><strong>$60,474</strong><em>+$1.21</em><i>82%</i></div></section>
+<aside className="beta-panel evidence"><header><div><span>SELECTED DRIVER</span><h2>{active.name}</h2></div><i className="status">{active.status}</i></header><div className="evidence-value"><span>Attributed variance</span><strong>{money(active.dollars)}</strong><b>+${active.pmpm.toFixed(2)} PMPM</b></div><section><span>Finding</span><p>{active.evidence}</p></section><dl><div><dt>Confidence</dt><dd>{active.confidence}% · High</dd></div><div><dt>Owner</dt><dd>{active.owner}</dd></div><div><dt>Population</dt><dd>{active.claims?`${active.claims} claims`:"2 settlement events"}</dd></div><div><dt>Sources</dt><dd>Claims v42 · Contract ledger v18</dd></div></dl><button className="primary-action" onClick={createOpportunity}>Create opportunity</button><Link href="/solutions">Evaluate solutions →</Link></aside></div>
+{notice&&<div className="beta-toast"><b>Opportunity created</b><span>{notice}</span><button onClick={()=>setNotice("")}>×</button></div>}
+<section className="beta-panel lineage"><header><div><span>OBJECT LINEAGE</span><h2>Evidence and calculation</h2></div><div className="lineage-tabs"><button className="active">Claims</button><button>Definition</button><button>Audit history</button></div></header><div className="lineage-meta"><span><b>Paid claim</b> PBM adjudication</span><i>→</i><span><b>Drug + class</b> NDC normalization</span><i>→</i><span><b>Contract ledger</b> Rebate allocation</span><i>→</i><span><b>Net PMPM</b> 49,954 lives</span></div><div className="beta-table"><div className="trow thead"><span>Object ID</span><span>Member</span><span>Drug / event</span><span>Service date</span><span>Net paid</span><span>Variance</span></div>{active.lineage.map(c=><button className="trow" key={c.id}><b>{c.id}</b><span>{c.member}</span><span>{c.drug}</span><span>{c.date}</span><span>{money(c.paid)}</span><strong>+{money(c.delta)}</strong></button>)}</div></section></section></main>}

@@ -1,0 +1,12 @@
+apiVersion: pbm.rxnext/v1
+kind: LinkCatalog
+spec:
+  links:
+    - { id: Member_has_Claim, from: Member.member_id, to: PharmacyClaim.member_id, cardinality: one_to_many }
+    - { id: Claim_for_Drug, from: PharmacyClaim.ndc11, to: DrugProduct.ndc11, cardinality: many_to_one }
+    - { id: Drug_in_Class, from: DrugProduct.gpi14, to: TherapeuticClass.gpi_prefix, cardinality: many_to_one, match: prefix }
+    - { id: Class_on_Formulary, from: TherapeuticClass.class_id, to: FormularyTier.class_id, cardinality: one_to_many }
+    - { id: Claim_settled_by_Rebate, from: PharmacyClaim.rebate_contract_id, to: RebateContract.contract_id, cardinality: many_to_one, markings: [rebate_confidential] }
+    - { id: Member_has_PA, from: Member.member_id, to: PriorAuthCase.member_id, cardinality: one_to_many }
+    - { id: PA_targets_Drug, from: PriorAuthCase.target_ndc11, to: DrugProduct.ndc11, cardinality: many_to_one }
+    - { id: Episode_routes_to_Site, from: SpecialtyEpisode.current_site_id, to: SiteOfCare.site_id, cardinality: many_to_one }
