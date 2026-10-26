@@ -177,6 +177,13 @@
   background: var(--warn);
 }
 
+.beta-context i.demo-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
 .beta-context button {
   border: 0;
   color: var(--accent);
@@ -1307,6 +1314,11 @@
   background: var(--success);
 }
 
+.rail-footer p i.future {
+  background: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
 .rail-footer p b {
   font: 600 10px var(--font-geist-mono);
 }
@@ -1327,6 +1339,43 @@
 .report-actions {
   display: flex;
   gap: 8px;
+}
+
+.projection-banner {
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 12px;
+  padding: 10px 14px;
+  border: 1px solid #bfdbfe;
+  border-radius: 10px;
+  background: #eff6ff;
+}
+
+.projection-banner > div {
+  display: grid;
+  gap: 2px;
+}
+
+.projection-banner b {
+  color: #1e3a8a;
+  font-size: 11px;
+}
+
+.projection-banner span {
+  color: #475569;
+  font-size: 11px;
+}
+
+.projection-banner button {
+  flex: 0 0 auto;
+  border: 0;
+  color: var(--accent);
+  background: transparent;
+  font-size: 11px;
+  font-weight: 700;
 }
 
 .report-scope {
@@ -1914,6 +1963,179 @@
 
 .report-lineage {
   margin: 0;
+}
+
+/* —— Demo projection setup —— */
+.projection-overlay {
+  position: fixed;
+  z-index: 100;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(15, 23, 42, 0.56);
+  backdrop-filter: blur(6px);
+}
+
+.projection-setup {
+  width: min(680px, 100%);
+  max-height: calc(100vh - 48px);
+  overflow: auto;
+  border: 1px solid #cbd5e1;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 24px 80px rgba(15, 23, 42, 0.28);
+}
+
+.projection-setup > header {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 22px 24px 18px;
+  border-bottom: 1px solid var(--line);
+}
+
+.projection-setup > header span {
+  color: var(--accent);
+  font: 700 10px var(--font-geist-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.projection-setup h2 {
+  margin: 6px 0 4px;
+  font-size: 21px;
+  letter-spacing: -0.03em;
+}
+
+.projection-setup header p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.projection-setup header > button {
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: #64748b;
+  background: #fff;
+  font-size: 18px;
+}
+
+.projection-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  padding: 20px 24px;
+}
+
+.projection-fields label {
+  display: grid;
+  gap: 6px;
+}
+
+.projection-fields label.wide {
+  grid-column: 1 / -1;
+}
+
+.projection-fields label > span {
+  color: #334155;
+  font-size: 11px;
+  font-weight: 650;
+}
+
+.projection-fields input,
+.projection-fields select {
+  width: 100%;
+  height: 40px;
+  padding: 0 11px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  color: var(--ink);
+  background: #fff;
+  outline: none;
+}
+
+.projection-fields input:focus,
+.projection-fields select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.input-suffix {
+  position: relative;
+}
+
+.input-suffix input {
+  padding-right: 34px;
+}
+
+.input-suffix b {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  color: #64748b;
+  font-size: 12px;
+}
+
+.projection-setup > aside {
+  display: grid;
+  gap: 2px;
+  margin: 0 24px 20px;
+  padding: 12px 14px;
+  border: 1px solid #dbeafe;
+  border-radius: 8px;
+  background: #f8fbff;
+}
+
+.projection-setup > aside b {
+  color: #1e3a8a;
+  font-size: 11px;
+}
+
+.projection-setup > aside span {
+  color: #64748b;
+  font-size: 11px;
+}
+
+.projection-setup > footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 24px;
+  border-top: 1px solid var(--line);
+  background: #f8fafc;
+}
+
+.projection-setup footer > div {
+  display: flex;
+  gap: 8px;
+}
+
+.projection-setup footer button {
+  height: 36px;
+  padding: 0 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  color: #475569;
+  background: #fff;
+  font-weight: 650;
+}
+
+.projection-setup footer button.dark {
+  color: #fff;
+  border-color: var(--nav);
+  background: var(--nav);
+}
+
+.projection-setup footer button.text-action {
+  padding-left: 0;
+  border-color: transparent;
+  color: #64748b;
+  background: transparent;
 }
 
 /* —— Responsive —— */

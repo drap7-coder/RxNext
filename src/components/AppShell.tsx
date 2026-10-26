@@ -9,6 +9,7 @@ type AppShellProps = {
   contextRight?: ReactNode;
   children: ReactNode;
   className?: string;
+  organizationName?: string;
 };
 
 export function AppShell({
@@ -17,6 +18,7 @@ export function AppShell({
   contextRight,
   children,
   className = "",
+  organizationName = "ACME Holdings",
 }: AppShellProps) {
   return (
     <main className={`beta-app ${className}`.trim()}>
@@ -40,9 +42,9 @@ export function AppShell({
           </button>
         </nav>
         <div className="beta-org">
-          <span>ACME Holdings</span>
-          <i>Benefits strategy</i>
-          <b>ND</b>
+          <span>{organizationName}</span>
+          <i>Illustrative demo</i>
+          <b>{organizationName.slice(0, 2).toUpperCase()}</b>
         </div>
       </header>
       <div className="beta-context">
