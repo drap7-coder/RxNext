@@ -10,3 +10,48 @@
 .portfolio-overview article{position:relative;overflow:hidden}.portfolio-overview article:before{content:"";position:absolute;inset:0 auto 0 0;width:3px}.portfolio-overview article:nth-child(1){background:#f0f7fa}.portfolio-overview article:nth-child(1):before{background:#287fa7}.portfolio-overview article:nth-child(1) strong{color:#17688e}.portfolio-overview article:nth-child(2){background:#f0f7f4}.portfolio-overview article:nth-child(2):before{background:#3b8c70}.portfolio-overview article:nth-child(2) strong{color:#276f59}.portfolio-overview article:nth-child(3){background:#faf5eb}.portfolio-overview article:nth-child(3):before{background:#c08a32}.portfolio-overview article:nth-child(3) strong{color:#8b611f}.portfolio-overview article:nth-child(4){background:#f7f2f7}.portfolio-overview article:nth-child(4):before{background:#8a6288}.portfolio-overview article:nth-child(4) strong{color:#704e70}.opportunity-row{position:relative}.opportunity-row:before{content:"";position:absolute;inset:12px auto 12px 0;width:3px;border-radius:0 2px 2px 0}.opportunity-row:nth-of-type(1):before{background:#d66e56}.opportunity-row:nth-of-type(2):before{background:#3e8cad}.opportunity-row:nth-of-type(3):before{background:#c08a32}.opportunity-row:nth-of-type(4):before{background:#80668f}.opportunity-row:nth-of-type(1)>strong{color:#a94d3b}.opportunity-row:nth-of-type(2)>strong{color:#24708f}.opportunity-row:nth-of-type(3)>strong{color:#8f621d}.opportunity-row:nth-of-type(4)>strong{color:#6e527c}.opportunity-row:hover{background:linear-gradient(90deg,#f5fafc,#fff 46%)}
 .candidate-card:nth-child(4n+1):before{background:#287fa7}.candidate-card:nth-child(4n+2):before{background:#3b8c70}.candidate-card:nth-child(4n+3):before{background:#c08a32}.candidate-card:nth-child(4n+4):before{background:#80668f}.candidate-card:nth-child(4n+1) .card-score strong{color:#17688e}.candidate-card:nth-child(4n+2) .card-score strong{color:#28745c}.candidate-card:nth-child(4n+3) .card-score strong{color:#91631e}.candidate-card:nth-child(4n+4) .card-score strong{color:#6f527d}.candidate-card:nth-child(4n+2) .card-score>i em{background:#3b8c70}.candidate-card:nth-child(4n+3) .card-score>i em{background:#c08a32}.candidate-card:nth-child(4n+4) .card-score>i em{background:#80668f}
 .beta-kpis article{position:relative;overflow:hidden}.beta-kpis article:before{content:"";position:absolute;inset:0 auto 0 0;width:3px}.beta-kpis article:nth-child(1){background:#fbf3f1}.beta-kpis article:nth-child(1):before{background:#c85f4b}.beta-kpis article:nth-child(2){background:#f0f7fa}.beta-kpis article:nth-child(2):before{background:#287fa7}.beta-kpis article:nth-child(3){background:#f0f7f4}.beta-kpis article:nth-child(3):before{background:#3b8c70}.beta-kpis article:nth-child(4){background:#f7f2f7}.beta-kpis article:nth-child(4):before{background:#80668f}.driver:nth-of-type(3).active{box-shadow:inset 3px 0 #287fa7}.driver:nth-of-type(4).active{box-shadow:inset 3px 0 #3b8c70}.driver:nth-of-type(5).active{box-shadow:inset 3px 0 #c08a32}.driver:nth-of-type(6).active{box-shadow:inset 3px 0 #80668f}
+
+/* Institutional finish — precise, executive-grade, and quietly premium. */
+.beta-app{
+  --ink:#142630;
+  --muted:#63747d;
+  --line:#cfd9de;
+  --nav:#091a24;
+  --blue:#126d98;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.72),rgba(239,243,245,.92) 270px),
+    #eef2f4;
+  color:var(--ink);
+  letter-spacing:-.006em;
+}
+.beta-top{
+  height:64px;
+  padding:0 30px;
+  background:linear-gradient(100deg,#081821 0%,#0c2431 58%,#102d3b 100%);
+  border-bottom:1px solid #3b5967;
+  box-shadow:0 8px 24px rgba(8,25,35,.15);
+}
+.beta-logo{gap:11px;align-items:center}.beta-logo:before{content:"";width:8px;height:24px;border-radius:1px;background:linear-gradient(180deg,#63b5d5 0 48%,#d2a551 48%);box-shadow:0 0 0 1px rgba(255,255,255,.08)}
+.beta-logo b{font-size:17px;font-weight:680;letter-spacing:-.045em}.beta-logo span{padding-left:11px;border-left:1px solid #415763;color:#93a4ad;letter-spacing:.11em}
+.beta-top nav{gap:2px}.beta-top nav a,.beta-top nav button{min-width:90px;padding:0 18px;color:#9dabb2;font-size:11px;font-weight:570;letter-spacing:.01em;transition:color .15s ease,background .15s ease}.beta-top nav a:hover,.beta-top nav button:hover{color:#eef5f7;background:rgba(255,255,255,.035)}.beta-top nav .active{color:#fff;border-color:#63b5d5;background:rgba(255,255,255,.045)}
+.beta-org span{font-weight:600}.beta-org i{color:#8da0aa}.beta-org b{border-color:#607783;background:rgba(255,255,255,.035)}
+.beta-context{height:44px;padding:0 30px;border-bottom-color:#ccd7dc;box-shadow:0 1px 0 rgba(255,255,255,.8);background:rgba(255,255,255,.94)}.beta-context strong{color:#203b49}.beta-context button{font-weight:620}
+.beta-page{max-width:1440px;padding:32px 32px 64px}.beta-title{margin-bottom:26px}.beta-title>div>span{color:#52717f;font-weight:620;letter-spacing:.12em}.beta-title h1{margin:6px 0 5px;font-size:30px;font-weight:650;letter-spacing:-.042em}.beta-title p{font-size:12px;letter-spacing:0}
+.beta-title-actions button,.button-link,.market-controls button,.market-controls select{border-radius:4px;font-weight:590;transition:background .15s ease,border-color .15s ease,box-shadow .15s ease,transform .15s ease}.beta-title-actions button:hover,.button-link:hover,.market-controls button:hover{border-color:#8da7b4;box-shadow:0 2px 8px rgba(16,45,59,.08)}.beta-title-actions .dark,.button-link{background:linear-gradient(180deg,#244553,#193541);border-color:#193541}.beta-title-actions .dark:hover,.button-link:hover{background:#132d39;transform:translateY(-1px)}
+.beta-kpis,.portfolio-overview,.decision-summary,.opportunity-list,.beta-panel,.workspace-tabs,.selected-candidate{
+  border-color:#cbd6db;
+  border-radius:7px;
+  box-shadow:0 1px 2px rgba(13,37,49,.06),0 12px 32px rgba(25,52,65,.045);
+  overflow:hidden;
+}
+.beta-kpis article,.portfolio-overview article{min-height:112px;padding:20px 22px}.beta-kpis span,.portfolio-overview span,.decision-summary span{color:#60737d;font-weight:540;letter-spacing:.01em}.beta-kpis strong,.portfolio-overview strong,.decision-summary strong{font-variant-numeric:tabular-nums}.beta-kpis strong{margin-top:8px}.portfolio-overview strong{font-size:24px}
+.beta-panel>header,.opportunity-list>header{min-height:66px;padding:13px 18px;background:linear-gradient(180deg,#fff,#fbfcfc)}.beta-panel h2,.opportunity-list h2{font-size:15px;font-weight:680;letter-spacing:-.015em}.beta-panel header>div>span,.opportunity-list>header span{color:#607985;font-weight:620;letter-spacing:.11em}
+.opportunity-row{min-height:84px;padding:12px 19px;transition:background .14s ease,box-shadow .14s ease}.opportunity-row:hover{background:linear-gradient(90deg,#edf6f9 0,#fff 55%);box-shadow:inset 0 1px #d8e3e7,inset 0 -1px #d8e3e7}.opportunity-row>div b{font-size:12px;font-weight:680;letter-spacing:-.01em}.opportunity-row>strong{font-size:13px;font-variant-numeric:tabular-nums}.opportunity-row>em{border:1px solid #eadab9;border-radius:12px;background:#fbf3e4;font-weight:590}.opportunity-row>u{font-weight:650}
+.workspace-tabs{margin-bottom:16px}.workspace-tabs button{min-height:58px;background:#fff;transition:background .15s ease,color .15s ease}.workspace-tabs button.active{color:#12394b;background:linear-gradient(180deg,#f7fbfc,#edf6f9);box-shadow:inset 0 2px #2683aa;border-bottom-color:transparent}.workspace-tabs button.active i{color:#267fa5}.workspace-tabs span{font-weight:680}
+.candidate-grid{gap:14px;padding:16px;background:#eef2f4}.candidate-card{min-height:198px;padding:18px;border-radius:7px;border-color:#ced9de;box-shadow:0 1px 2px rgba(13,37,49,.05),0 8px 18px rgba(18,49,64,.035);transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease}.candidate-card:hover{transform:translateY(-2px);border-color:#91afbd;box-shadow:0 2px 4px rgba(13,37,49,.07),0 15px 30px rgba(20,48,63,.09)}.candidate-card.active{border-color:#3786a8;box-shadow:0 0 0 1px #3786a8,0 16px 34px rgba(20,63,84,.11)}.candidate-card h3{font-size:16px;font-weight:680}.card-score strong{font-size:25px}.candidate-card footer{font-size:9px}.card-top>i{padding:4px 7px}
+.driver,.candidate,.trow{transition:background .13s ease}.driver:hover,.candidate:hover,.trow:not(.thead):hover{background:#f5f9fa}.driver.active,.candidate.active{background:linear-gradient(90deg,#ebf5f8,#f8fbfc)}
+.primary-action{border-radius:4px!important;background:linear-gradient(180deg,#1d7da6,#12678d)!important;box-shadow:0 2px 7px rgba(18,103,141,.18);transition:filter .15s ease,transform .15s ease}.primary-action:hover{filter:brightness(.94);transform:translateY(-1px)}
+.scenario-results .base{border-radius:5px;background:linear-gradient(155deg,#e9f4f7,#f7fbfc);box-shadow:inset 0 0 0 1px #d5e6ec}.assumptions label{box-shadow:inset 0 0 0 1px rgba(207,217,222,.3)}
+.beta-app button:focus-visible,.beta-app a:focus-visible,.beta-app input:focus-visible,.beta-app select:focus-visible{outline:2px solid #2c8cb4;outline-offset:2px}
+@media(max-width:980px){.beta-top{padding:0 20px}.beta-page{padding:26px 20px 52px}.beta-context{padding:0 20px}}
+@media(max-width:620px){.beta-top{height:58px;padding:0 14px}.beta-logo span{display:none}.beta-context{padding:0 14px}.beta-page{padding:22px 12px 44px}.beta-title h1{font-size:26px}.beta-kpis article,.portfolio-overview article{min-height:98px}.candidate-grid{padding:10px}}
