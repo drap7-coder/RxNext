@@ -85,5 +85,5 @@ Notes on visual verify: headless Chrome sometimes hangs after writing the PNG (t
 
 - Product UI: `137978eda9a74356d8166c54cbfe5dee988389f4`
 - Handoff docs: `ce4ed1978ba43c84fb7434c2f3f9c2c5b451d49f`
-- Local branch tip: `c381986e0633b56583a92188ce0fb4acc97841cb`
+- Local branch tip: `59d3d9402b4ae06cd0b8897defa757f094b7f7d2`
 - After a successful push, trust `git rev-parse origin/cursor-product-pass`.
