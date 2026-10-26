@@ -25,18 +25,28 @@ export default function Home() {
   function createOpportunity() {
     const item = {
       id: `OPP-${Date.now().toString().slice(-5)}`,
+      code: `OPP-${Date.now().toString().slice(-5)}`,
       name: active.name,
+      driver: active.detail,
       value: active.dollars,
+      annual: Math.round(active.dollars * 12),
       stage: "Identified",
       owner: active.owner,
+      confidence: active.confidence,
+      due: "TBD",
       created: new Date().toISOString(),
     };
-    const current = JSON.parse(localStorage.getItem("rxnext-opportunities") || "[]");
-    localStorage.setItem(
-      "rxnext-opportunities",
-      JSON.stringify([item, ...current.filter((x: { name: string }) => x.name !== item.name)]),
-    );
-    setNotice(`${item.id} created and added to the decision pipeline.`);
+    try {
+      const raw = localStorage.getItem("rxnext-opportunities");
+      const current = raw ? (JSON.parse(raw) as { name: string }[]) : [];
+      localStorage.setItem(
+        "rxnext-opportunities",
+        JSON.stringify([item, ...current.filter((x) => x.name !== item.name)]),
+      );
+      setNotice(`${item.id} created and added to the decision pipeline.`);
+    } catch {
+      setNotice("Could not save opportunity locally. Try again.");
+    }
   }
 
   return (

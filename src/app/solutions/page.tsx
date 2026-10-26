@@ -4,7 +4,11 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import { compactMoney, money } from "@/lib/format";
-import { opportunities, portfolioTotals } from "@/lib/opportunities";
+import {
+  opportunities as seedOpportunities,
+  portfolioTotals as seedTotals,
+  type Opportunity,
+} from "@/lib/opportunities";
 import { solutions, type Solution } from "@/lib/solutions";
 import "../product.css";
 
@@ -101,6 +105,34 @@ const gates = [
   "Decision recorded",
 ];
 
+function readCreatedOpportunities(): Opportunity[] {
+  try {
+    const raw = localStorage.getItem("rxnext-opportunities");
+    if (!raw) return [];
+    const parsed = JSON.parse(raw) as Array<Partial<Opportunity> & { name?: string; value?: number }>;
+    if (!Array.isArray(parsed)) return [];
+    return parsed
+      .filter((item) => item.name && typeof item.value === "number")
+      .map((item, index) => {
+        const code = item.code || item.id || `OPP-LOCAL-${index + 1}`;
+        return {
+          id: item.id || code,
+          code,
+          name: item.name as string,
+          driver: item.driver || "Created from Reports",
+          value: item.value as number,
+          annual: item.annual ?? Math.round((item.value as number) * 12),
+          owner: item.owner || "Unassigned",
+          stage: item.stage || "Identified",
+          confidence: item.confidence ?? 80,
+          due: item.due || "TBD",
+        };
+      });
+  } catch {
+    return [];
+  }
+}
+
 export default function Solutions() {
   const [active, setActive] = useState<Solution | null>(
     solutions.find((s) => s.id === "waltz") ?? null,
@@ -117,6 +149,26 @@ export default function Solutions() {
   const [note, setNote] = useState("");
   const [notes, setNotes] = useState<string[]>([]);
   const [notice, setNotice] = useState("");
+  const [createdOpps] = useState<Opportunity[]>(() =>
+    typeof window === "undefined" ? [] : readCreatedOpportunities(),
+  );
+
+  const opportunities = useMemo(() => {
+    const seedNames = new Set(seedOpportunities.map((item) => item.name.toLowerCase()));
+    const extras = createdOpps.filter((item) => !seedNames.has(item.name.toLowerCase()));
+    return [...extras, ...seedOpportunities].sort((a, b) => b.value - a.value);
+  }, [createdOpps]);
+
+  const portfolioTotals = useMemo(() => {
+    if (createdOpps.length === 0) return seedTotals;
+    return {
+      identifiedValue: opportunities.reduce((sum, item) => sum + item.value, 0),
+      annualExposure: opportunities.reduce((sum, item) => sum + item.annual, 0),
+      inDecision: opportunities.filter((item) => item.stage !== "Monitoring").length,
+      nextDeadline: seedTotals.nextDeadline,
+      nextDeadlineLabel: seedTotals.nextDeadlineLabel,
+    };
+  }, [createdOpps.length, opportunities]);
 
   const opportunity = opportunities.find((item) => item.id === opportunityId) ?? null;
   const annualBase = opportunity?.annual ?? 3440000;
@@ -290,7 +342,10 @@ export default function Solutions() {
               <article>
                 <span>Identified value</span>
                 <strong>{money(portfolioTotals.identifiedValue)}</strong>
-                <small>Across four active opportunities</small>
+                <small>
+                  Across {opportunities.length} active opportunit
+                  {opportunities.length === 1 ? "y" : "ies"}
+                </small>
               </article>
               <article>
                 <span>Annualized exposure</span>
