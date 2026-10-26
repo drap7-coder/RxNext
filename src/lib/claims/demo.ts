@@ -24,6 +24,7 @@ export const demoClaimsSnapshot: PbmClaimsSnapshot = {
       label: "Net PMPM",
       valueLabel: "$95.23",
       delta: 14.82,
+      deltaDigits: 2,
       deltaLabel: "vs. baseline",
       percent: 18.4,
       higherIsWorse: true,

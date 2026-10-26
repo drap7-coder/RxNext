@@ -15,6 +15,8 @@ export type ReportKpi = {
   valueLabel: string;
   /** Signed delta used for tone (e.g. spend vs baseline). */
   delta: number;
+  /** Decimal precision for the displayed currency delta. */
+  deltaDigits?: number;
   deltaLabel: string;
   percent?: number;
   /** Cost KPIs: higher is worse. Savings / explained value: higher is better. */

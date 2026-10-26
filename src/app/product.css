@@ -1380,10 +1380,6 @@
   background: var(--accent);
 }
 
-.report-kpis article.delta--adverse:before { background: var(--danger); }
-.report-kpis article.delta--favorable:before { background: var(--success); }
-.report-kpis article.delta--neutral:before { background: var(--accent); }
-
 .report-kpis span {
   display: block;
   color: var(--muted);
@@ -1393,6 +1389,7 @@
 .report-kpis strong {
   display: block;
   margin: 8px 0;
+  color: var(--ink);
   font: 750 24px/1 var(--font-geist-mono);
   letter-spacing: -0.04em;
   font-variant-numeric: tabular-nums;
@@ -1405,7 +1402,19 @@
 }
 
 .report-kpis p b {
-  color: inherit;
+  font-weight: 700;
+}
+
+.report-kpis p b.delta--adverse {
+  color: var(--danger);
+}
+
+.report-kpis p b.delta--favorable {
+  color: var(--success);
+}
+
+.report-kpis p b.delta--neutral {
+  color: #475569;
 }
 
 .report-kpis small {
