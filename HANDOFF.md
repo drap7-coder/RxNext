@@ -2,9 +2,10 @@
 
 **Branch:** `cursor-product-pass`  
 **Product UI commit:** `137978eda9a74356d8166c54cbfe5dee988389f4`  
-**Final commit SHA:** see Exact final commit SHA below  
+**Final commit SHA:** tip of `cursor-product-pass` (see Exact section + `git rev-parse`)  
 **Base:** `main` @ `5872798`  
-**Do not merge or alter Vercel production from this pass.**
+**Do not merge or alter Vercel production from this pass.**  
+**Push status:** blocked — `cursor[bot]` lacks write access to `drap7-coder/RxNext` (HTTP 403). Bundle: `/opt/cursor/artifacts/rxnext-cursor-product-pass.bundle`.
 
 ## What changed and why
 
@@ -84,4 +85,5 @@ Notes on visual verify: headless Chrome sometimes hangs after writing the PNG (t
 
 - Product UI: `137978eda9a74356d8166c54cbfe5dee988389f4`
 - Handoff docs: `ce4ed1978ba43c84fb7434c2f3f9c2c5b451d49f`
-- Branch tip (checkout this): `a4fcb0e89a373604ecd277422b92e162bf22d0b8`
+- Local branch tip: `c381986e0633b56583a92188ce0fb4acc97841cb`
+- After a successful push, trust `git rev-parse origin/cursor-product-pass`.
