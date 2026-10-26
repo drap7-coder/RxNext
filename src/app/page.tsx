@@ -9,9 +9,10 @@ import {
   sanitizeProjectionInputs,
   type DemoProjectionInputs,
 } from "@/lib/claims";
-import { compactMoney, money } from "@/lib/format";
+import { money } from "@/lib/format";
 import { metricTone, signedMoney, signedPercent, toneClass } from "@/lib/metric-tone";
 import { reportViews, type ReportView } from "@/lib/report-data";
+import { buildReportViewModel } from "@/lib/report-view";
 import "./product.css";
 
 const railIcons = ["◫", "⌁", "⌇", "◇", "≡", "↙"];
@@ -25,7 +26,11 @@ export default function Home() {
   const [notice, setNotice] = useState("");
   const [reportView, setReportView] = useState<ReportView>("Overview");
   const claims = useMemo(() => buildProjectionSnapshot(projection), [projection]);
-  const spendDrivers = claims.drivers;
+  const viewModel = useMemo(
+    () => buildReportViewModel(reportView, projection, claims),
+    [claims, projection, reportView],
+  );
+  const spendDrivers = viewModel.drivers;
   const active = useMemo(
     () => spendDrivers.find((d) => d.id === activeId) ?? spendDrivers[0],
     [activeId, spendDrivers],
@@ -174,7 +179,7 @@ export default function Home() {
             <div>
               <span>Pharmacy performance · Executive report</span>
               <h1>{reportView}</h1>
-              <p>Net cost, utilization, and opportunity performance across the pharmacy benefit.</p>
+              <p>{viewModel.description}</p>
             </div>
             <div className="report-actions">
               <button type="button">{claims.scope.periodLabel} ⌄</button>
@@ -213,7 +218,7 @@ export default function Home() {
           </div>
 
           <div className="report-kpis">
-            {claims.kpis.map((kpi) => {
+            {viewModel.kpis.map((kpi) => {
               const metric = metricTone(kpi.delta, { higherIsWorse: kpi.higherIsWorse });
               const chip =
                 kpi.chipTone ??
@@ -225,18 +230,10 @@ export default function Home() {
                   <span>{kpi.label}</span>
                   <strong>{kpi.valueLabel}</strong>
                   <p>
-                    {kpi.percent != null ? (
-                      <>
-                        <b className={toneClass(metric)}>
-                          {signedMoney(kpi.delta, kpi.deltaDigits ?? 0)}
-                        </b>{" "}
-                        {kpi.deltaLabel}
-                      </>
-                    ) : (
-                      <>
-                        {money(kpi.delta)} {kpi.deltaLabel}
-                      </>
-                    )}
+                    <b className={toneClass(metric)}>
+                      {kpi.deltaValueLabel ?? signedMoney(kpi.delta, kpi.deltaDigits ?? 0)}
+                    </b>{" "}
+                    {kpi.deltaLabel}
                   </p>
                   {kpi.chipLabel ? (
                     <small className={toneClass(chip)}>{kpi.chipLabel}</small>
@@ -252,8 +249,8 @@ export default function Home() {
             <section className="report-panel trend-panel">
               <header>
                 <div>
-                  <span>Net paid trend</span>
-                  <h2>Cost performance</h2>
+                  <span>{viewModel.trendEyebrow}</span>
+                  <h2>{viewModel.trendTitle}</h2>
                 </div>
                 <div className="report-segments">
                   <button type="button" className="active">
@@ -265,20 +262,17 @@ export default function Home() {
               </header>
               <div className="chart-meta">
                 <div>
-                  <span>Projected monthly</span>
-                  <strong>{claims.kpis[0].valueLabel}</strong>
+                  <span>{viewModel.trendMetricLabel}</span>
+                  <strong>{viewModel.trendMetricValue}</strong>
                 </div>
                 <div>
-                  <span>Current baseline range</span>
-                  <b>
-                    {compactMoney((projection.annualSpend / 12) * 0.96)}–
-                    {compactMoney((projection.annualSpend / 12) * 1.04)}
-                  </b>
+                  <span>{viewModel.comparisonLabel}</span>
+                  <b>{viewModel.comparisonValue}</b>
                 </div>
                 <i>
                   <b />
-                  Actual <b />
-                  Baseline
+                  Projected <b />
+                  Reference
                 </i>
               </div>
               <svg
@@ -334,7 +328,7 @@ export default function Home() {
                 </g>
                 <circle cx="735" cy="39" r="5" />
                 <text className="chart-callout" x="670" y="25">
-                  {claims.kpis[0].valueLabel}
+                  {viewModel.trendMetricValue}
                 </text>
               </svg>
             </section>
@@ -343,7 +337,7 @@ export default function Home() {
               <header>
                 <div>
                   <span>Attention queue</span>
-                  <h2>Material exceptions</h2>
+                  <h2>{viewModel.queueTitle}</h2>
                 </div>
                 <b>4 open</b>
               </header>
@@ -376,7 +370,7 @@ export default function Home() {
               <header>
                 <div>
                   <span>Variance decomposition</span>
-                  <h2>Projected drivers</h2>
+                  <h2>{viewModel.decompositionTitle}</h2>
                 </div>
                 <button type="button">Absolute dollars ↓</button>
               </header>

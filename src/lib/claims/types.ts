@@ -15,6 +15,8 @@ export type ReportKpi = {
   valueLabel: string;
   /** Signed delta used for tone (e.g. spend vs baseline). */
   delta: number;
+  /** Optional non-currency presentation for a delta, such as +8.2 pts. */
+  deltaValueLabel?: string;
   /** Decimal precision for the displayed currency delta. */
   deltaDigits?: number;
   deltaLabel: string;
