@@ -83,5 +83,5 @@ Notes on visual verify: headless Chrome sometimes hangs after writing the PNG (t
 ## Exact final commit SHA
 
 - Product UI: `137978eda9a74356d8166c54cbfe5dee988389f4`
-- Branch tip: filled in next line after commit
-`TIP_PENDING`
+- Handoff docs: `ce4ed1978ba43c84fb7434c2f3f9c2c5b451d49f`
+- Branch tip (checkout this): `cfb18d689d246209f4d5496024abc5489936044a`
