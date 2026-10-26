@@ -61,7 +61,7 @@ Broad product-pass redesign to make RxNext feel like an enterprise PBM intellige
 ## Follow-on (semantic tone + PBM claims data)
 
 - `src/lib/metric-tone.ts` — sign-aware adverse/favorable classes (cost up = red; savings/ROI up = green).
-- `src/lib/claims/` — **PBM claims data** layer (`demoClaimsData` / `getPbmClaimsData`), not a generic “provider” name. Next: work claims dataset behind `CLAIMS_DATA=work`.
+- `src/lib/claims/` — **PBM claims data** layer (`getPbmClaimsSnapshot` / `getPbmClaimsData`). `CLAIMS_DATA=work` **fails closed** until a connector exists (never silently serves demo). KPI card tone uses `metricTone`; `chipTone` is badge-only. Vitest covers tone + fail-closed work mode (`npm test`).
 
 ## Recommended next steps
 

@@ -3,14 +3,14 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { AppShell } from "@/components/AppShell";
-import { demoClaimsSnapshot } from "@/lib/claims";
+import { getPbmClaimsSnapshot } from "@/lib/claims";
 import { money } from "@/lib/format";
 import { metricTone, signedMoney, signedPercent, toneClass } from "@/lib/metric-tone";
 import { reportViews, type ReportView } from "@/lib/report-data";
 import "./product.css";
 
 const railIcons = ["◫", "⌁", "⌇", "◇", "≡", "↙"];
-const claims = demoClaimsSnapshot;
+const claims = getPbmClaimsSnapshot();
 const spendDrivers = claims.drivers;
 
 export default function Home() {
@@ -158,15 +158,20 @@ export default function Home() {
 
           <div className="report-kpis">
             {claims.kpis.map((kpi) => {
-              const tone = kpi.chipTone ?? metricTone(kpi.delta, { higherIsWorse: kpi.higherIsWorse });
+              const metric = metricTone(kpi.delta, { higherIsWorse: kpi.higherIsWorse });
+              const chip =
+                kpi.chipTone ??
+                (kpi.percent != null
+                  ? metricTone(kpi.percent, { higherIsWorse: kpi.higherIsWorse })
+                  : metric);
               return (
-                <article key={kpi.id} className={toneClass(tone)}>
+                <article key={kpi.id} className={toneClass(metric)}>
                   <span>{kpi.label}</span>
                   <strong>{kpi.valueLabel}</strong>
                   <p>
                     {kpi.percent != null ? (
                       <>
-                        <b className={toneClass(tone)}>{signedMoney(kpi.delta)}</b> {kpi.deltaLabel}
+                        <b className={toneClass(metric)}>{signedMoney(kpi.delta)}</b> {kpi.deltaLabel}
                       </>
                     ) : (
                       <>
@@ -175,9 +180,9 @@ export default function Home() {
                     )}
                   </p>
                   {kpi.chipLabel ? (
-                    <small className={toneClass(kpi.chipTone ?? "favorable")}>{kpi.chipLabel}</small>
+                    <small className={toneClass(chip)}>{kpi.chipLabel}</small>
                   ) : kpi.percent != null ? (
-                    <small className={toneClass(tone)}>{signedPercent(kpi.percent)}</small>
+                    <small className={toneClass(chip)}>{signedPercent(kpi.percent)}</small>
                   ) : null}
                 </article>
               );
