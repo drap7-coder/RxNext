@@ -84,4 +84,4 @@ Notes on visual verify: headless Chrome sometimes hangs after writing the PNG (t
 
 - Product UI: `137978eda9a74356d8166c54cbfe5dee988389f4`
 - Handoff docs: `ce4ed1978ba43c84fb7434c2f3f9c2c5b451d49f`
-- Branch tip (checkout this): `cfb18d689d246209f4d5496024abc5489936044a`
+- Branch tip (checkout this): `a4fcb0e89a373604ecd277422b92e162bf22d0b8`
