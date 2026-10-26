@@ -401,9 +401,10 @@
 }
 
 .portfolio-overview article:nth-child(1) strong { color: #1d4ed8; }
-.portfolio-overview article:nth-child(2) strong { color: #047857; }
-.portfolio-overview article:nth-child(3) strong { color: #b45309; }
-.portfolio-overview article:nth-child(4) strong { color: #7c3aed; }
+/* Annualized exposure is risk — warn, not success green */
+.portfolio-overview article:nth-child(2) strong { color: #b45309; }
+.portfolio-overview article:nth-child(3) strong { color: #7c3aed; }
+.portfolio-overview article:nth-child(4) strong { color: #475569; }
 
 /* —— Opportunities list —— */
 .opportunity-row {
@@ -1379,10 +1380,9 @@
   background: var(--accent);
 }
 
-.report-kpis article:nth-child(1):before { background: var(--danger); }
-.report-kpis article:nth-child(2):before { background: var(--accent); }
-.report-kpis article:nth-child(3):before { background: #7c3aed; }
-.report-kpis article:nth-child(4):before { background: var(--success); }
+.report-kpis article.delta--adverse:before { background: var(--danger); }
+.report-kpis article.delta--favorable:before { background: var(--success); }
+.report-kpis article.delta--neutral:before { background: var(--accent); }
 
 .report-kpis span {
   display: block;
@@ -1405,7 +1405,7 @@
 }
 
 .report-kpis p b {
-  color: var(--danger);
+  color: inherit;
 }
 
 .report-kpis small {
@@ -1414,14 +1414,38 @@
   top: 12px;
   padding: 3px 7px;
   border-radius: 999px;
-  color: #9f1239;
-  background: #fff1f2;
   font: 650 10px var(--font-geist-mono);
 }
 
-.report-kpis small.good {
+/* Semantic delta tones — favorable = green, adverse = red */
+.delta--adverse {
+  color: var(--danger);
+}
+
+.delta--favorable {
+  color: var(--success);
+}
+
+.delta--neutral {
+  color: #475569;
+}
+
+.report-kpis small.delta--adverse,
+.report-kpis small.good.delta--adverse {
+  color: #9f1239;
+  background: #fff1f2;
+}
+
+.report-kpis small.delta--favorable,
+.report-kpis small.good,
+.report-kpis small.good.delta--favorable {
   color: #047857;
   background: #ecfdf5;
+}
+
+.report-kpis small.delta--neutral {
+  color: #475569;
+  background: #f1f5f9;
 }
 
 .report-grid,
@@ -1604,9 +1628,12 @@
 }
 
 .alert > strong {
-  color: var(--danger);
   font: 700 11px var(--font-geist-mono);
 }
+
+.alert > strong.delta--adverse { color: var(--danger); }
+.alert > strong.delta--favorable { color: var(--success); }
+.alert > strong.delta--neutral { color: #475569; }
 
 .alert > em {
   color: var(--muted);
@@ -1686,8 +1713,15 @@
 }
 
 .driver em {
-  color: var(--danger);
+  color: inherit;
 }
+
+.driver strong.delta--adverse,
+.driver em.delta--adverse { color: var(--danger); }
+.driver strong.delta--favorable,
+.driver em.delta--favorable { color: var(--success); }
+.driver strong.delta--neutral,
+.driver em.delta--neutral { color: #475569; }
 
 .driver > i {
   color: #475569;
@@ -1725,9 +1759,15 @@
 }
 
 .evidence-value b {
-  color: var(--danger);
   font: 650 12px var(--font-geist-mono);
 }
+
+.evidence-value strong.delta--adverse,
+.evidence-value b.delta--adverse { color: var(--danger); }
+.evidence-value strong.delta--favorable,
+.evidence-value b.delta--favorable { color: var(--success); }
+.evidence-value strong.delta--neutral,
+.evidence-value b.delta--neutral { color: #475569; }
 
 .evidence dl {
   margin: 0;
@@ -1840,10 +1880,19 @@
 }
 
 .trow strong {
-  color: var(--danger);
   text-align: right;
   font-family: var(--font-geist-mono);
 }
+
+.trow strong.delta--adverse { color: var(--danger); }
+.trow strong.delta--favorable { color: var(--success); }
+.trow strong.delta--neutral { color: #475569; }
+
+.scenario-results strong.delta--adverse { color: var(--danger); }
+.scenario-results strong.delta--favorable { color: var(--success); }
+.scenario-results strong.delta--neutral { color: #475569; }
+.scenario-results .base strong.delta--favorable { color: var(--success); }
+.scenario-results .base strong.delta--adverse { color: var(--danger); }
 
 .trow span:nth-last-child(2) {
   text-align: right;

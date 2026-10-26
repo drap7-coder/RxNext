@@ -3,15 +3,15 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { AppShell } from "@/components/AppShell";
+import { demoClaimsSnapshot } from "@/lib/claims";
 import { money } from "@/lib/format";
-import {
-  reportViews,
-  spendDrivers,
-  type ReportView,
-} from "@/lib/report-data";
+import { metricTone, signedMoney, signedPercent, toneClass } from "@/lib/metric-tone";
+import { reportViews, type ReportView } from "@/lib/report-data";
 import "./product.css";
 
 const railIcons = ["◫", "⌁", "⌇", "◇", "≡", "↙"];
+const claims = demoClaimsSnapshot;
+const spendDrivers = claims.drivers;
 
 export default function Home() {
   const [activeId, setActiveId] = useState("glp1");
@@ -132,7 +132,7 @@ export default function Home() {
               <p>Net cost, utilization, and opportunity performance across the pharmacy benefit.</p>
             </div>
             <div className="report-actions">
-              <button type="button">Sep 1–30, 2026 ⌄</button>
+              <button type="button">{claims.scope.periodLabel} ⌄</button>
               <button type="button">Share</button>
               <button type="button" className="dark">
                 Export report
@@ -143,50 +143,45 @@ export default function Home() {
           <div className="report-scope">
             <div>
               <b>Reporting basis</b>
-              <span>Paid date · Net of estimated rebates</span>
+              <span>{claims.scope.basis}</span>
             </div>
             <div>
               <b>Population</b>
-              <span>49,954 eligible lives</span>
+              <span>{claims.scope.populationLives.toLocaleString()} eligible lives</span>
             </div>
             <div>
               <b>Comparison</b>
-              <span>Jun–Aug normalized baseline</span>
+              <span>{claims.scope.comparison}</span>
             </div>
             <button type="button">Change scope</button>
           </div>
 
           <div className="report-kpis">
-            <article>
-              <span>Net pharmacy spend</span>
-              <strong>$4.76M</strong>
-              <p>
-                <b>+$740,320</b> vs. baseline
-              </p>
-              <small>+18.4%</small>
-            </article>
-            <article>
-              <span>Net PMPM</span>
-              <strong>$95.23</strong>
-              <p>
-                <b>+$14.82</b> vs. baseline
-              </p>
-              <small>+18.4%</small>
-            </article>
-            <article>
-              <span>Annualized forecast</span>
-              <strong>$57.1M</strong>
-              <p>
-                <b>+$2.18M</b> above plan
-              </p>
-              <small>+4.0%</small>
-            </article>
-            <article>
-              <span>Explained variance</span>
-              <strong>91.8%</strong>
-              <p>$679,846 attributed</p>
-              <small className="good">High confidence</small>
-            </article>
+            {claims.kpis.map((kpi) => {
+              const tone = kpi.chipTone ?? metricTone(kpi.delta, { higherIsWorse: kpi.higherIsWorse });
+              return (
+                <article key={kpi.id} className={toneClass(tone)}>
+                  <span>{kpi.label}</span>
+                  <strong>{kpi.valueLabel}</strong>
+                  <p>
+                    {kpi.percent != null ? (
+                      <>
+                        <b className={toneClass(tone)}>{signedMoney(kpi.delta)}</b> {kpi.deltaLabel}
+                      </>
+                    ) : (
+                      <>
+                        {money(kpi.delta)} {kpi.deltaLabel}
+                      </>
+                    )}
+                  </p>
+                  {kpi.chipLabel ? (
+                    <small className={toneClass(kpi.chipTone ?? "favorable")}>{kpi.chipLabel}</small>
+                  ) : kpi.percent != null ? (
+                    <small className={toneClass(tone)}>{signedPercent(kpi.percent)}</small>
+                  ) : null}
+                </article>
+              );
+            })}
           </div>
 
           <div className="report-grid">
@@ -297,7 +292,9 @@ export default function Home() {
                     <b>{d.name}</b>
                     <span>{d.detail}</span>
                   </div>
-                  <strong>+{money(d.dollars)}</strong>
+                  <strong className={toneClass(metricTone(d.dollars, { higherIsWorse: true }))}>
+                    {signedMoney(d.dollars)}
+                  </strong>
                   <em>{d.confidence}%</em>
                 </button>
               ))}
@@ -335,8 +332,12 @@ export default function Home() {
                       {d.detail} · {d.claims ? `${d.claims} claims` : "financial event"}
                     </span>
                   </div>
-                  <strong>{money(d.dollars)}</strong>
-                  <em>+${d.pmpm.toFixed(2)}</em>
+                  <strong className={toneClass(metricTone(d.dollars, { higherIsWorse: true }))}>
+                    {signedMoney(d.dollars)}
+                  </strong>
+                  <em className={toneClass(metricTone(d.pmpm, { higherIsWorse: true }))}>
+                    {signedMoney(d.pmpm, 2)}
+                  </em>
                   <i>{d.confidence}%</i>
                 </button>
               ))}
@@ -352,8 +353,12 @@ export default function Home() {
               </header>
               <div className="evidence-value">
                 <span>Attributed variance</span>
-                <strong>{money(active.dollars)}</strong>
-                <b>+${active.pmpm.toFixed(2)} PMPM</b>
+                <strong className={toneClass(metricTone(active.dollars, { higherIsWorse: true }))}>
+                  {signedMoney(active.dollars)}
+                </strong>
+                <b className={toneClass(metricTone(active.pmpm, { higherIsWorse: true }))}>
+                  {signedMoney(active.pmpm, 2)} PMPM
+                </b>
               </div>
               <section>
                 <span>Finding</span>
@@ -407,7 +412,7 @@ export default function Home() {
               </span>
               <i>→</i>
               <span>
-                <b>Net PMPM</b> 49,954 lives
+                <b>Net PMPM</b> {claims.scope.populationLives.toLocaleString()} lives
               </span>
             </div>
             <div className="beta-table">
@@ -426,7 +431,9 @@ export default function Home() {
                   <span>{c.drug}</span>
                   <span>{c.date}</span>
                   <span>{money(c.paid)}</span>
-                  <strong>+{money(c.delta)}</strong>
+                  <strong className={toneClass(metricTone(c.delta, { higherIsWorse: true }))}>
+                    {signedMoney(c.delta)}
+                  </strong>
                 </button>
               ))}
             </div>

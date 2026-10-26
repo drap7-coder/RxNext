@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import { compactMoney, money } from "@/lib/format";
+import { metricTone, toneClass } from "@/lib/metric-tone";
 import {
   opportunities as seedOpportunities,
   portfolioTotals as seedTotals,
@@ -656,12 +657,16 @@ export default function Solutions() {
                   <div className="scenario-results">
                     <div>
                       <span>Low</span>
-                      <strong>{money(low)}</strong>
+                      <strong className={toneClass(metricTone(low, { higherIsWorse: false }))}>
+                        {money(low)}
+                      </strong>
                       <small>Net year-one value</small>
                     </div>
                     <div className="base">
                       <span>Base</span>
-                      <strong>{money(Math.round(net))}</strong>
+                      <strong className={toneClass(metricTone(Math.round(net), { higherIsWorse: false }))}>
+                        {money(Math.round(net))}
+                      </strong>
                       <small>
                         {net > 0
                           ? `${(net / totalCost).toFixed(1)}× return on investment`
@@ -670,7 +675,9 @@ export default function Solutions() {
                     </div>
                     <div>
                       <span>High</span>
-                      <strong>{money(high)}</strong>
+                      <strong className={toneClass(metricTone(high, { higherIsWorse: false }))}>
+                        {money(high)}
+                      </strong>
                       <small>Net year-one value</small>
                     </div>
                     <footer>
