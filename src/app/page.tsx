@@ -165,13 +165,16 @@ export default function Home() {
                   ? metricTone(kpi.percent, { higherIsWorse: kpi.higherIsWorse })
                   : metric);
               return (
-                <article key={kpi.id} className={toneClass(metric)}>
+                <article key={kpi.id}>
                   <span>{kpi.label}</span>
                   <strong>{kpi.valueLabel}</strong>
                   <p>
                     {kpi.percent != null ? (
                       <>
-                        <b className={toneClass(metric)}>{signedMoney(kpi.delta)}</b> {kpi.deltaLabel}
+                        <b className={toneClass(metric)}>
+                          {signedMoney(kpi.delta, kpi.deltaDigits ?? 0)}
+                        </b>{" "}
+                        {kpi.deltaLabel}
                       </>
                     ) : (
                       <>
