@@ -3,7 +3,9 @@
 **Branch:** `cursor-product-pass`  
 **Remote tip (pre-review-fix):** `890eecb04a72b210970cd01e778e82be9bc8d432`  
 **Base:** `main` @ `5872798`  
-**Status:** On GitHub. Review/stabilize before merge. Do **not** merge or alter Vercel production without approval.
+**Status:** Merged to `main` via PR #1. Follow-on work on semantic metric tone + PBM claims data layer.
+
+**Competitive design benchmarks (not partners):** Aon, PSG — use when designing claims analytics, guarantee/audit trust, and observe→decide→act.
 
 ## What changed and why
 
@@ -56,9 +58,14 @@ Broad product-pass redesign to make RxNext feel like an enterprise PBM intellige
 - Mobile hides report left rail under 720px.
 - No CI unit/e2e suite in-repo yet (smoke script is manual/local).
 
-## Recommended next steps (post-merge)
+## Follow-on (semantic tone + PBM claims data)
 
-1. Replace demo data with a **provider-based data layer** for a safe work dataset connection.
+- `src/lib/metric-tone.ts` — sign-aware adverse/favorable classes (cost up = red; savings/ROI up = green).
+- `src/lib/claims/` — **PBM claims data** layer (`getPbmClaimsSnapshot` / `getPbmClaimsData`). `CLAIMS_DATA=work` **fails closed** until a connector exists (never silently serves demo). KPI card tone uses `metricTone`; `chipTone` is badge-only. Vitest covers tone + fail-closed work mode (`npm test`).
+
+## Recommended next steps
+
+1. Connect a safe **work PBM claims dataset** through `src/lib/claims` (keep demo fixtures).
 2. Real **Actions** write-back (RFI, shortlist, gate advance + audit log).
 3. Add Vitest/Playwright to CI using `scripts/review-smoke.mjs` patterns.
 4. Deep-link `?opp=` from Reports → Opportunities.
