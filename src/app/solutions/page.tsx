@@ -281,10 +281,15 @@ export default function Solutions() {
     setOpportunityId(id);
     const selectedOpportunity = opportunities.find((item) => item.id === id);
     if (selectedOpportunity) {
-      const first = rankSolutionsForGaps(
+      const [first] = rankSolutionsForGaps(
         solutions,
         detectOpportunityGaps(selectedOpportunity, projectionInputs),
-      )[0];
+      ).sort(
+        (a, b) =>
+          b.fit - a.fit ||
+          (evidence[b.solution.id] ?? defaults).score -
+            (evidence[a.solution.id] ?? defaults).score,
+      );
       setActive(first?.solution ?? null);
     }
     setWorkspace("candidates");
