@@ -3,6 +3,11 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { AppShell } from "@/components/AppShell";
+import {
+  defaultProjectionInputs,
+  sanitizeProjectionInputs,
+  type DemoProjectionInputs,
+} from "@/lib/claims";
 import { compactMoney, money } from "@/lib/format";
 import { metricTone, toneClass } from "@/lib/metric-tone";
 import {
@@ -11,6 +16,7 @@ import {
   type Opportunity,
 } from "@/lib/opportunities";
 import { solutions, type Solution } from "@/lib/solutions";
+import { detectOpportunityGaps, rankSolutionsForGaps } from "@/lib/solution-matching";
 import "../product.css";
 
 const weights = [
@@ -134,6 +140,17 @@ function readCreatedOpportunities(): Opportunity[] {
   }
 }
 
+function readProjectionInputs(): DemoProjectionInputs {
+  try {
+    const raw = localStorage.getItem("rxnext-demo-projection");
+    return raw
+      ? sanitizeProjectionInputs(JSON.parse(raw) as DemoProjectionInputs)
+      : defaultProjectionInputs;
+  } catch {
+    return defaultProjectionInputs;
+  }
+}
+
 export default function Solutions() {
   const [active, setActive] = useState<Solution | null>(
     solutions.find((s) => s.id === "waltz") ?? null,
@@ -152,6 +169,9 @@ export default function Solutions() {
   const [notice, setNotice] = useState("");
   const [createdOpps] = useState<Opportunity[]>(() =>
     typeof window === "undefined" ? [] : readCreatedOpportunities(),
+  );
+  const [projectionInputs] = useState<DemoProjectionInputs>(() =>
+    typeof window === "undefined" ? defaultProjectionInputs : readProjectionInputs(),
   );
 
   const opportunities = useMemo(() => {
@@ -173,12 +193,29 @@ export default function Solutions() {
 
   const opportunity = opportunities.find((item) => item.id === opportunityId) ?? null;
   const annualBase = opportunity?.annual ?? 3440000;
+  const gapSignals = useMemo(
+    () => (opportunity ? detectOpportunityGaps(opportunity, projectionInputs) : []),
+    [opportunity, projectionInputs],
+  );
+  const gapMatches = useMemo(
+    () => rankSolutionsForGaps(solutions, gapSignals),
+    [gapSignals],
+  );
+  const matchById = useMemo(
+    () => new Map(gapMatches.map((match) => [match.solution.id, match])),
+    [gapMatches],
+  );
 
   const ranked = useMemo(() => {
     const matcher =
       modelFilters.find((filter) => filter.id === modelFilter)?.match ?? modelFilters[0].match;
     return solutions
-      .map((s) => ({ s, e: evidence[s.id] ?? defaults }))
+      .map((s) => ({
+        s,
+        e: evidence[s.id] ?? defaults,
+        fit: matchById.get(s.id)?.fit ?? (evidence[s.id] ?? defaults).score,
+        reasons: matchById.get(s.id)?.reasons ?? [],
+      }))
       .filter(
         (x) =>
           matcher(x.s) &&
@@ -187,8 +224,8 @@ export default function Solutions() {
               .toLowerCase()
               .includes(query.toLowerCase())),
       )
-      .sort((a, b) => b.e.score - a.e.score);
-  }, [query, modelFilter]);
+      .sort((a, b) => b.fit - a.fit || b.e.score - a.e.score);
+  }, [query, modelFilter, matchById]);
 
   const gross = annualBase * (adoption / 100) * (reduction / 100);
   const totalCost = fee + implementation;
@@ -202,9 +239,13 @@ export default function Solutions() {
     const matcher =
       modelFilters.find((filter) => filter.id === next)?.match ?? modelFilters[0].match;
     const first = solutions
-      .map((s) => ({ s, e: evidence[s.id] ?? defaults }))
+      .map((s) => ({
+        s,
+        e: evidence[s.id] ?? defaults,
+        fit: matchById.get(s.id)?.fit ?? (evidence[s.id] ?? defaults).score,
+      }))
       .filter((x) => matcher(x.s))
-      .sort((a, b) => b.e.score - a.e.score)[0];
+      .sort((a, b) => b.fit - a.fit || b.e.score - a.e.score)[0];
     setActive(first?.s ?? null);
   }
 
@@ -238,6 +279,19 @@ export default function Solutions() {
 
   function openOpportunity(id: string) {
     setOpportunityId(id);
+    const selectedOpportunity = opportunities.find((item) => item.id === id);
+    if (selectedOpportunity) {
+      const [first] = rankSolutionsForGaps(
+        solutions,
+        detectOpportunityGaps(selectedOpportunity, projectionInputs),
+      ).sort(
+        (a, b) =>
+          b.fit - a.fit ||
+          (evidence[b.solution.id] ?? defaults).score -
+            (evidence[a.solution.id] ?? defaults).score,
+      );
+      setActive(first?.solution ?? null);
+    }
     setWorkspace("candidates");
     setStage(3);
     setNotes([]);
@@ -337,6 +391,34 @@ export default function Solutions() {
           </div>
         ) : null}
 
+        {opportunity ? (
+          <section className="gap-analysis" aria-label="Opportunity gap analysis">
+            <header>
+              <div>
+                <span>BENCHMARK DIFF</span>
+                <h2>Why this opportunity exists</h2>
+              </div>
+              <b>{gapSignals.length} material gaps</b>
+            </header>
+            <div>
+              {gapSignals.map((gap) => (
+                <article key={gap.id}>
+                  <span>{gap.label}</span>
+                  <strong>{gap.difference}</strong>
+                  <small>{gap.observed}</small>
+                  <i>Target: {gap.target}</i>
+                </article>
+              ))}
+              <article className="match-method">
+                <span>Matching method</span>
+                <strong>Gap → capability → fit</strong>
+                <small>Candidate ranking uses the capabilities implied by these differences.</small>
+                <i>Illustrative recommendation logic</i>
+              </article>
+            </div>
+          </section>
+        ) : null}
+
         {!opportunity ? (
           <section className="portfolio-pipeline">
             <div className="portfolio-overview">
@@ -428,7 +510,7 @@ export default function Solutions() {
                   <header>
                     <div>
                       <span>CANDIDATE SOLUTIONS · {ranked.length} RESULTS</span>
-                      <h2>Evidence-ranked shortlist</h2>
+                      <h2>Gap-matched shortlist</h2>
                     </div>
                     <label>
                       <span>⌕</span>
@@ -460,7 +542,7 @@ export default function Solutions() {
                   </div>
                   {ranked.length ? (
                     <div className="candidate-grid">
-                      {ranked.map(({ s, e }) => (
+                      {ranked.map(({ s, e, fit, reasons }) => (
                         <button
                           key={s.id}
                           type="button"
@@ -476,13 +558,14 @@ export default function Solutions() {
                           <p>{s.model}</p>
                           <div className="card-score">
                             <div>
-                              <strong>{e.score}</strong>
-                              <span>Evidence score</span>
+                              <strong>{fit}</strong>
+                              <span>Gap fit</span>
                             </div>
                             <i>
-                              <em style={{ width: `${e.score}%` }} />
+                              <em style={{ width: `${fit}%` }} />
                             </i>
                           </div>
+                          {reasons[0] ? <p className="match-reason">{reasons[0]}</p> : null}
                           <footer>
                             <span>
                               <i /> {e.confidence}
