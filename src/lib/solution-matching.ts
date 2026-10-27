@@ -170,9 +170,6 @@ export function rankSolutionsForGaps(
   gaps: GapSignal[],
 ): Array<{ solution: Solution; fit: number; reasons: string[] }> {
   const objectives = [...new Set(gaps.flatMap((gap) => gap.objectives))];
-  const capabilityTerms = [
-    ...new Set(gaps.flatMap((gap) => gap.capabilityTerms)),
-  ];
   return catalog
     .map((solution) => {
       const solutionText = [
@@ -182,13 +179,20 @@ export function rankSolutionsForGaps(
       ]
         .join(" ")
         .toLowerCase();
-      const matchedCapabilities = capabilityTerms.filter((term) =>
-        solutionText.includes(term.toLowerCase()),
-      );
       const capabilityScore = Math.round(
-        (Math.min(matchedCapabilities.length, 3) /
-          Math.min(capabilityTerms.length, 3)) *
-          100,
+        gaps.reduce((total, gap) => {
+          const [primary, ...supporting] = gap.capabilityTerms;
+          const primaryScore = solutionText.includes(primary.toLowerCase())
+            ? 50
+            : 0;
+          const supportingMatches = supporting.filter((term) =>
+            solutionText.includes(term.toLowerCase()),
+          ).length;
+          const supportingScore =
+            (Math.min(supportingMatches, 2) / Math.min(supporting.length, 2)) *
+            50;
+          return total + primaryScore + supportingScore;
+        }, 0) / gaps.length,
       );
       const objectiveScore = solutionScore(solution, objectives);
 

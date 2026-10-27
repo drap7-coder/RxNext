@@ -34,4 +34,11 @@ describe("gap-to-solution matching", () => {
       ranked.findIndex((item) => item.solution.id === "cost-plus"),
     ).toBeGreaterThan(2);
   });
+
+  it("prioritizes formulary capability for a biosimilar conversion gap", () => {
+    const opportunity = opportunities.find((item) => item.id === "biosimilar")!;
+    const gaps = detectOpportunityGaps(opportunity, defaultProjectionInputs);
+    const ranked = rankSolutionsForGaps(solutions, gaps);
+    expect(ranked[0].solution.id).toBe("navitus");
+  });
 });
