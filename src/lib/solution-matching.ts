@@ -179,8 +179,6 @@ export function rankSolutionsForGaps(
         solution.category,
         solution.model,
         solution.description,
-        solution.bestFor,
-        ...solution.strengths,
       ]
         .join(" ")
         .toLowerCase();
