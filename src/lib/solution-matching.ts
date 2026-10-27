@@ -9,6 +9,7 @@ export type GapSignal = {
   target: string;
   difference: string;
   objectives: Objective[];
+  capabilityTerms: string[];
 };
 
 function signed(value: number, suffix: string) {
@@ -32,6 +33,13 @@ export function detectOpportunityGaps(
         target: "≤8.0% managed trend",
         difference: signed(trendGap, " pts"),
         objectives: ["glp1", "lower-cost", "member-experience"],
+        capabilityTerms: [
+          "glp",
+          "clinical",
+          "eligibility",
+          "navigation",
+          "routing",
+        ],
       },
       {
         id: "glp-pathway",
@@ -40,6 +48,13 @@ export function detectOpportunityGaps(
         target: "Clinical eligibility + guided access",
         difference: "Workflow gap",
         objectives: ["glp1", "member-experience", "transparency"],
+        capabilityTerms: [
+          "glp",
+          "clinical",
+          "eligibility",
+          "navigation",
+          "prescribing",
+        ],
       },
     ];
   }
@@ -53,6 +68,7 @@ export function detectOpportunityGaps(
         target: "48% reference share",
         difference: signed(specialtyGap, " pts"),
         objectives: ["specialty", "lower-cost", "transparency"],
+        capabilityTerms: ["specialty", "routing", "marketplace", "network"],
       },
       {
         id: "site-routing",
@@ -61,6 +77,7 @@ export function detectOpportunityGaps(
         target: "Lowest appropriate care setting",
         difference: "Routing gap",
         objectives: ["specialty", "lower-cost", "member-experience"],
+        capabilityTerms: ["specialty", "routing", "marketplace", "network"],
       },
     ];
   }
@@ -74,6 +91,13 @@ export function detectOpportunityGaps(
         target: "≥90% preferred utilization",
         difference: "-5.3 pts",
         objectives: ["lower-cost", "specialty", "fast-launch"],
+        capabilityTerms: [
+          "formulary",
+          "specialty",
+          "claims",
+          "navigation",
+          "prescriber",
+        ],
       },
       {
         id: "member-routing",
@@ -82,6 +106,13 @@ export function detectOpportunityGaps(
         target: "Active lower-cost navigation",
         difference: "Action gap",
         objectives: ["lower-cost", "member-experience", "fast-launch"],
+        capabilityTerms: [
+          "formulary",
+          "claims",
+          "navigation",
+          "routing",
+          "prescriber",
+        ],
       },
     ];
   }
@@ -95,6 +126,13 @@ export function detectOpportunityGaps(
         target: "In-period guarantee visibility",
         difference: "Control gap",
         objectives: ["transparency", "lower-cost", "fast-launch"],
+        capabilityTerms: [
+          "pbm",
+          "claims",
+          "pass-through",
+          "analytics",
+          "administration",
+        ],
       },
       {
         id: "contract-proof",
@@ -103,6 +141,13 @@ export function detectOpportunityGaps(
         target: "100% claim-level reconciliation",
         difference: "8 pts uncertain",
         objectives: ["transparency", "lower-cost"],
+        capabilityTerms: [
+          "pbm",
+          "claims",
+          "pass-through",
+          "analytics",
+          "administration",
+        ],
       },
     ];
   }
@@ -115,6 +160,7 @@ export function detectOpportunityGaps(
       target: "≤8.0% reference trend",
       difference: signed(trendGap, " pts"),
       objectives: ["lower-cost", "transparency", "fast-launch"],
+      capabilityTerms: ["claims", "analytics", "pbm", "navigation", "routing"],
     },
   ];
 }
@@ -124,16 +170,50 @@ export function rankSolutionsForGaps(
   gaps: GapSignal[],
 ): Array<{ solution: Solution; fit: number; reasons: string[] }> {
   const objectives = [...new Set(gaps.flatMap((gap) => gap.objectives))];
+  const capabilityTerms = [
+    ...new Set(gaps.flatMap((gap) => gap.capabilityTerms)),
+  ];
   return catalog
-    .map((solution) => ({
-      solution,
-      fit: solutionScore(solution, objectives),
-      reasons: gaps.slice(0, 2).map((gap) => {
-        const bestObjective = gap.objectives
-          .map((objective) => ({ objective, score: solution.scores[objective] }))
-          .sort((a, b) => b.score - a.score)[0];
-        return `${gap.label}: ${bestObjective.score}/5 ${bestObjective.objective.replaceAll("-", " ")} fit`;
-      }),
-    }))
-    .sort((a, b) => b.fit - a.fit || a.solution.name.localeCompare(b.solution.name));
+    .map((solution) => {
+      const solutionText = [
+        solution.category,
+        solution.model,
+        solution.description,
+        solution.bestFor,
+        ...solution.strengths,
+      ]
+        .join(" ")
+        .toLowerCase();
+      const matchedCapabilities = capabilityTerms.filter((term) =>
+        solutionText.includes(term.toLowerCase()),
+      );
+      const capabilityScore = Math.round(
+        (Math.min(matchedCapabilities.length, 3) /
+          Math.min(capabilityTerms.length, 3)) *
+          100,
+      );
+      const objectiveScore = solutionScore(solution, objectives);
+
+      return {
+        solution,
+        fit: Math.round(objectiveScore * 0.6 + capabilityScore * 0.4),
+        reasons: gaps.slice(0, 2).map((gap) => {
+          const matched = gap.capabilityTerms.filter((term) =>
+            solutionText.includes(term.toLowerCase()),
+          );
+          const bestObjective = gap.objectives
+            .map((objective) => ({
+              objective,
+              score: solution.scores[objective],
+            }))
+            .sort((a, b) => b.score - a.score)[0];
+          return matched.length
+            ? `${gap.label}: ${matched.slice(0, 2).join(" + ")} capability`
+            : `${gap.label}: ${bestObjective.score}/5 ${bestObjective.objective.replaceAll("-", " ")} fit`;
+        }),
+      };
+    })
+    .sort(
+      (a, b) => b.fit - a.fit || a.solution.name.localeCompare(b.solution.name),
+    );
 }

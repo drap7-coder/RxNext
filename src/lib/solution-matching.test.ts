@@ -1,7 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { defaultProjectionInputs } from "@/lib/claims";
 import { opportunities } from "@/lib/opportunities";
-import { detectOpportunityGaps, rankSolutionsForGaps } from "@/lib/solution-matching";
+import {
+  detectOpportunityGaps,
+  rankSolutionsForGaps,
+} from "@/lib/solution-matching";
 import { solutions } from "@/lib/solutions";
 
 describe("gap-to-solution matching", () => {
@@ -17,6 +20,18 @@ describe("gap-to-solution matching", () => {
     const gaps = detectOpportunityGaps(opportunity, defaultProjectionInputs);
     const ranked = rankSolutionsForGaps(solutions, gaps);
     expect(ranked[0].fit).toBeGreaterThanOrEqual(ranked.at(-1)!.fit);
-    expect(ranked.slice(0, 3).some((item) => item.solution.id === "glp1-direct")).toBe(true);
+    expect(
+      ranked.slice(0, 3).some((item) => item.solution.id === "glp1-direct"),
+    ).toBe(true);
+  });
+
+  it("does not recommend a retail cost-plus pharmacy for claims-level rebate controls", () => {
+    const opportunity = opportunities.find((item) => item.id === "rebate")!;
+    const gaps = detectOpportunityGaps(opportunity, defaultProjectionInputs);
+    const ranked = rankSolutionsForGaps(solutions, gaps);
+    expect(ranked[0].solution.category.toLowerCase()).toContain("pbm");
+    expect(
+      ranked.findIndex((item) => item.solution.id === "cost-plus"),
+    ).toBeGreaterThan(2);
   });
 });
