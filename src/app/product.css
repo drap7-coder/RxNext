@@ -413,6 +413,91 @@
 .portfolio-overview article:nth-child(3) strong { color: #7c3aed; }
 .portfolio-overview article:nth-child(4) strong { color: #475569; }
 
+.gap-analysis {
+  margin-bottom: 14px;
+  overflow: hidden;
+  border: 1px solid #bfdbfe;
+  border-radius: 12px;
+  background: #f8fbff;
+  box-shadow: var(--shadow);
+}
+
+.gap-analysis > header {
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 16px;
+  border-bottom: 1px solid #dbeafe;
+}
+
+.gap-analysis header span {
+  color: var(--accent);
+  font: 700 9px var(--font-geist-mono);
+  letter-spacing: 0.1em;
+}
+
+.gap-analysis h2 {
+  margin: 2px 0 0;
+  font-size: 14px;
+}
+
+.gap-analysis header > b {
+  padding: 4px 8px;
+  border-radius: 999px;
+  color: #1d4ed8;
+  background: #dbeafe;
+  font-size: 10px;
+}
+
+.gap-analysis > div {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.gap-analysis article {
+  min-height: 108px;
+  display: grid;
+  align-content: start;
+  gap: 4px;
+  padding: 14px 16px;
+  border-right: 1px solid #dbeafe;
+}
+
+.gap-analysis article:last-child {
+  border-right: 0;
+}
+
+.gap-analysis article > span {
+  color: #64748b;
+  font-size: 10px;
+  font-weight: 650;
+}
+
+.gap-analysis article > strong {
+  color: #be123c;
+  font: 750 18px var(--font-geist-mono);
+  letter-spacing: -0.03em;
+}
+
+.gap-analysis article > small,
+.gap-analysis article > i {
+  color: #475569;
+  font-size: 10px;
+  font-style: normal;
+}
+
+.gap-analysis article > i {
+  color: #1d4ed8;
+}
+
+.gap-analysis article.match-method > strong {
+  color: #1d4ed8;
+  font: 700 13px var(--font-geist-sans);
+  letter-spacing: 0;
+}
+
 /* —— Opportunities list —— */
 .opportunity-row {
   width: 100%;
@@ -725,6 +810,16 @@
   margin: 0;
   color: var(--muted);
   font-size: 12px;
+}
+
+.candidate-card > p.match-reason {
+  min-height: 30px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid #e2e8f0;
+  color: #475569;
+  font-size: 10px;
+  line-height: 1.4;
 }
 
 .card-score {
