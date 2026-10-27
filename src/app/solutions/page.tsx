@@ -16,7 +16,10 @@ import {
   type Opportunity,
 } from "@/lib/opportunities";
 import { solutions, type Solution } from "@/lib/solutions";
-import { detectOpportunityGaps, rankSolutionsForGaps } from "@/lib/solution-matching";
+import {
+  detectOpportunityGaps,
+  rankSolutionsForGaps,
+} from "@/lib/solution-matching";
 import "../product.css";
 
 const weights = [
@@ -88,12 +91,15 @@ const modelFilters: {
     id: "navigation",
     label: "Navigation",
     match: (s) =>
-      /navigation|experience|home pharmacy|claims-driven/i.test(`${s.category} ${s.model}`),
+      /navigation|experience|home pharmacy|claims-driven/i.test(
+        `${s.category} ${s.model}`,
+      ),
   },
   {
     id: "specialty",
     label: "Specialty",
-    match: (s) => /specialty/i.test(`${s.category} ${s.model} ${s.description}`),
+    match: (s) =>
+      /specialty/i.test(`${s.category} ${s.model} ${s.description}`),
   },
   {
     id: "transparent",
@@ -116,7 +122,9 @@ function readCreatedOpportunities(): Opportunity[] {
   try {
     const raw = localStorage.getItem("rxnext-opportunities");
     if (!raw) return [];
-    const parsed = JSON.parse(raw) as Array<Partial<Opportunity> & { name?: string; value?: number }>;
+    const parsed = JSON.parse(raw) as Array<
+      Partial<Opportunity> & { name?: string; value?: number }
+    >;
     if (!Array.isArray(parsed)) return [];
     return parsed
       .filter((item) => item.name && typeof item.value === "number")
@@ -171,12 +179,18 @@ export default function Solutions() {
     typeof window === "undefined" ? [] : readCreatedOpportunities(),
   );
   const [projectionInputs] = useState<DemoProjectionInputs>(() =>
-    typeof window === "undefined" ? defaultProjectionInputs : readProjectionInputs(),
+    typeof window === "undefined"
+      ? defaultProjectionInputs
+      : readProjectionInputs(),
   );
 
   const opportunities = useMemo(() => {
-    const seedNames = new Set(seedOpportunities.map((item) => item.name.toLowerCase()));
-    const extras = createdOpps.filter((item) => !seedNames.has(item.name.toLowerCase()));
+    const seedNames = new Set(
+      seedOpportunities.map((item) => item.name.toLowerCase()),
+    );
+    const extras = createdOpps.filter(
+      (item) => !seedNames.has(item.name.toLowerCase()),
+    );
     return [...extras, ...seedOpportunities].sort((a, b) => b.value - a.value);
   }, [createdOpps]);
 
@@ -185,16 +199,19 @@ export default function Solutions() {
     return {
       identifiedValue: opportunities.reduce((sum, item) => sum + item.value, 0),
       annualExposure: opportunities.reduce((sum, item) => sum + item.annual, 0),
-      inDecision: opportunities.filter((item) => item.stage !== "Monitoring").length,
+      inDecision: opportunities.filter((item) => item.stage !== "Monitoring")
+        .length,
       nextDeadline: seedTotals.nextDeadline,
       nextDeadlineLabel: seedTotals.nextDeadlineLabel,
     };
   }, [createdOpps.length, opportunities]);
 
-  const opportunity = opportunities.find((item) => item.id === opportunityId) ?? null;
+  const opportunity =
+    opportunities.find((item) => item.id === opportunityId) ?? null;
   const annualBase = opportunity?.annual ?? 3440000;
   const gapSignals = useMemo(
-    () => (opportunity ? detectOpportunityGaps(opportunity, projectionInputs) : []),
+    () =>
+      opportunity ? detectOpportunityGaps(opportunity, projectionInputs) : [],
     [opportunity, projectionInputs],
   );
   const gapMatches = useMemo(
@@ -208,7 +225,8 @@ export default function Solutions() {
 
   const ranked = useMemo(() => {
     const matcher =
-      modelFilters.find((filter) => filter.id === modelFilter)?.match ?? modelFilters[0].match;
+      modelFilters.find((filter) => filter.id === modelFilter)?.match ??
+      modelFilters[0].match;
     return solutions
       .map((s) => ({
         s,
@@ -232,12 +250,13 @@ export default function Solutions() {
   const net = gross - totalCost;
   const low = Math.round(gross * 0.68 - totalCost);
   const high = Math.round(gross * 1.31 - totalCost);
-  const activeEvidence = active ? evidence[active.id] ?? defaults : defaults;
+  const activeEvidence = active ? (evidence[active.id] ?? defaults) : defaults;
 
   function changeModelFilter(next: ModelFilter) {
     setModelFilter(next);
     const matcher =
-      modelFilters.find((filter) => filter.id === next)?.match ?? modelFilters[0].match;
+      modelFilters.find((filter) => filter.id === next)?.match ??
+      modelFilters[0].match;
     const first = solutions
       .map((s) => ({
         s,
@@ -264,7 +283,11 @@ export default function Solutions() {
     );
     setNotice(
       `${active?.name} advanced to ${
-        next === 4 ? "commercial modeling" : next === 5 ? "clinical approval" : "decision recorded"
+        next === 4
+          ? "commercial modeling"
+          : next === 5
+            ? "clinical approval"
+            : "decision recorded"
       }.`,
     );
     setWorkspace(next === 4 ? "economics" : "decision");
@@ -305,7 +328,9 @@ export default function Solutions() {
         <>
           <span>Decision pipeline</span>
           <b>/</b>
-          <strong>{opportunity ? opportunity.code : "Solution evaluation"}</strong>
+          <strong>
+            {opportunity ? opportunity.code : "Solution evaluation"}
+          </strong>
         </>
       }
       contextRight={
@@ -340,7 +365,9 @@ export default function Solutions() {
                 <button
                   type="button"
                   className="dark"
-                  onClick={() => setNotice(`RFI draft created for ${active?.name}.`)}
+                  onClick={() =>
+                    setNotice(`RFI draft created for ${active?.name}.`)
+                  }
                 >
                   Create RFI
                 </button>
@@ -348,7 +375,7 @@ export default function Solutions() {
             ) : (
               <>
                 <button type="button">Portfolio brief</button>
-                <Link className="button-link" href="/">
+                <Link className="button-link" href="/reports">
                   Review spend drivers
                 </Link>
               </>
@@ -392,7 +419,10 @@ export default function Solutions() {
         ) : null}
 
         {opportunity ? (
-          <section className="gap-analysis" aria-label="Opportunity gap analysis">
+          <section
+            className="gap-analysis"
+            aria-label="Opportunity gap analysis"
+          >
             <header>
               <div>
                 <span>BENCHMARK DIFF</span>
@@ -412,7 +442,10 @@ export default function Solutions() {
               <article className="match-method">
                 <span>Matching method</span>
                 <strong>Gap → capability → fit</strong>
-                <small>Candidate ranking uses the capabilities implied by these differences.</small>
+                <small>
+                  Candidate ranking uses the capabilities implied by these
+                  differences.
+                </small>
                 <i>Illustrative recommendation logic</i>
               </article>
             </div>
@@ -482,7 +515,10 @@ export default function Solutions() {
 
         {opportunity ? (
           <>
-            <nav className="workspace-tabs" aria-label="Decision workspace views">
+            <nav
+              className="workspace-tabs"
+              aria-label="Decision workspace views"
+            >
               {(
                 [
                   ["candidates", "Candidates"],
@@ -499,7 +535,9 @@ export default function Solutions() {
                 >
                   <i>{String(index + 1).padStart(2, "0")}</i>
                   <span>{label}</span>
-                  {id === "diligence" && notes.length > 0 ? <b>{notes.length}</b> : null}
+                  {id === "diligence" && notes.length > 0 ? (
+                    <b>{notes.length}</b>
+                  ) : null}
                 </button>
               ))}
             </nav>
@@ -527,14 +565,19 @@ export default function Solutions() {
                       <button
                         key={filter.id}
                         type="button"
-                        className={modelFilter === filter.id ? "active" : undefined}
+                        className={
+                          modelFilter === filter.id ? "active" : undefined
+                        }
                         aria-pressed={modelFilter === filter.id}
                         onClick={() => changeModelFilter(filter.id)}
                       >
                         {filter.label}
                       </button>
                     ))}
-                    <select aria-label="Filter by diligence stage" defaultValue="all">
+                    <select
+                      aria-label="Filter by diligence stage"
+                      defaultValue="all"
+                    >
                       <option value="all">All stages</option>
                       <option value="shortlisted">Shortlisted</option>
                       <option value="diligence">In diligence</option>
@@ -546,7 +589,11 @@ export default function Solutions() {
                         <button
                           key={s.id}
                           type="button"
-                          className={active?.id === s.id ? "candidate-card active" : "candidate-card"}
+                          className={
+                            active?.id === s.id
+                              ? "candidate-card active"
+                              : "candidate-card"
+                          }
                           onClick={() => setActive(s)}
                           aria-pressed={active?.id === s.id}
                         >
@@ -565,7 +612,9 @@ export default function Solutions() {
                               <em style={{ width: `${fit}%` }} />
                             </i>
                           </div>
-                          {reasons[0] ? <p className="match-reason">{reasons[0]}</p> : null}
+                          {reasons[0] ? (
+                            <p className="match-reason">{reasons[0]}</p>
+                          ) : null}
                           <footer>
                             <span>
                               <i /> {e.confidence}
@@ -579,7 +628,9 @@ export default function Solutions() {
                   ) : (
                     <div className="candidate-empty">
                       <b>No matching candidates</b>
-                      <span>Clear the search or choose another solution model.</span>
+                      <span>
+                        Clear the search or choose another solution model.
+                      </span>
                       <button
                         type="button"
                         onClick={() => {
@@ -595,7 +646,10 @@ export default function Solutions() {
                 <div className="selected-candidate">
                   <span>Selected candidate</span>
                   <b>{active?.name}</b>
-                  <button type="button" onClick={() => setWorkspace("diligence")}>
+                  <button
+                    type="button"
+                    onClick={() => setWorkspace("diligence")}
+                  >
                     Open diligence →
                   </button>
                 </div>
@@ -668,13 +722,19 @@ export default function Solutions() {
                       </button>
                     </div>
                     <div className="diligence-actions">
-                      <button type="button" className="primary-action" onClick={advance}>
+                      <button
+                        type="button"
+                        className="primary-action"
+                        onClick={advance}
+                      >
                         {stage >= 6 ? "Decision recorded" : "Advance stage"}
                       </button>
                       <button
                         type="button"
                         onClick={() =>
-                          setNotice(`${active.name} added to the working shortlist.`)
+                          setNotice(
+                            `${active.name} added to the working shortlist.`,
+                          )
                         }
                       >
                         Shortlist
@@ -733,21 +793,31 @@ export default function Solutions() {
                       <input
                         type="number"
                         value={implementation}
-                        onChange={(e) => setImplementation(Number(e.target.value))}
+                        onChange={(e) =>
+                          setImplementation(Number(e.target.value))
+                        }
                       />
                     </label>
                   </div>
                   <div className="scenario-results">
                     <div>
                       <span>Low</span>
-                      <strong className={toneClass(metricTone(low, { higherIsWorse: false }))}>
+                      <strong
+                        className={toneClass(
+                          metricTone(low, { higherIsWorse: false }),
+                        )}
+                      >
                         {money(low)}
                       </strong>
                       <small>Net year-one value</small>
                     </div>
                     <div className="base">
                       <span>Base</span>
-                      <strong className={toneClass(metricTone(Math.round(net), { higherIsWorse: false }))}>
+                      <strong
+                        className={toneClass(
+                          metricTone(Math.round(net), { higherIsWorse: false }),
+                        )}
+                      >
                         {money(Math.round(net))}
                       </strong>
                       <small>
@@ -758,7 +828,11 @@ export default function Solutions() {
                     </div>
                     <div>
                       <span>High</span>
-                      <strong className={toneClass(metricTone(high, { higherIsWorse: false }))}>
+                      <strong
+                        className={toneClass(
+                          metricTone(high, { higherIsWorse: false }),
+                        )}
+                      >
                         {money(high)}
                       </strong>
                       <small>Net year-one value</small>
@@ -787,11 +861,24 @@ export default function Solutions() {
                 </header>
                 <div className="gates">
                   {gates.map((g, i) => (
-                    <div className={i < stage ? "complete" : i === stage ? "current" : undefined} key={g}>
+                    <div
+                      className={
+                        i < stage
+                          ? "complete"
+                          : i === stage
+                            ? "current"
+                            : undefined
+                      }
+                      key={g}
+                    >
                       <i>{i < stage ? "✓" : i + 1}</i>
                       <b>{g}</b>
                       <span>
-                        {i < stage ? "Complete" : i === stage ? "In progress" : "Not started"}
+                        {i < stage
+                          ? "Complete"
+                          : i === stage
+                            ? "In progress"
+                            : "Not started"}
                       </span>
                     </div>
                   ))}
@@ -805,7 +892,11 @@ export default function Solutions() {
           <div className="beta-toast">
             <b>Decision record updated</b>
             <span>{notice}</span>
-            <button type="button" onClick={() => setNotice("")} aria-label="Dismiss notification">
+            <button
+              type="button"
+              onClick={() => setNotice("")}
+              aria-label="Dismiss notification"
+            >
               ×
             </button>
           </div>

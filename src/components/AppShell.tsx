@@ -4,7 +4,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 
 type AppShellProps = {
-  active: "reports" | "solutions";
+  active: "home" | "reports" | "solutions";
   contextLeft: ReactNode;
   contextRight?: ReactNode;
   children: ReactNode;
@@ -28,7 +28,13 @@ export function AppShell({
           <span>Benefit intelligence</span>
         </Link>
         <nav aria-label="Primary">
-          <Link className={active === "reports" ? "active" : undefined} href="/">
+          <Link className={active === "home" ? "active" : undefined} href="/">
+            Home
+          </Link>
+          <Link
+            className={active === "reports" ? "active" : undefined}
+            href="/reports"
+          >
             Reports
           </Link>
           <Link
